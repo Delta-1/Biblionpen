@@ -108,7 +108,7 @@
                     <i class="fa-solid fa-circle-plus mr-1"></i> <span data-i18n="navSuggest">Contribuir</span>
                 </button>
                 <button onclick="switchTab('admin')" id="nav-admin" class="nav-btn text-moss-100 hover:text-white font-medium text-sm transition-all border-b-2 border-transparent py-1">
-                    <i class="fa-solid fa-lock mr-1"></i> <span data-i18n="navAdmin">Planilhas / Configs</span>
+                    <i class="fa-solid fa-lock mr-1"></i> <span data-i18n="navAdmin">Planilha / Configs</span>
                 </button>
             </nav>
 
@@ -182,9 +182,9 @@
             </div>
 
             <!-- Stats Bar / Source Info -->
-            <div class="w-full max-w-5xl flex flex-row items-center justify-between px-4 sm:px-2 mb-4 text-[11px] sm:text-xs text-slate-400 font-medium">
+            <div class="w-full max-w-5xl flex flex-row items-center justify-between px-4 sm:px-0 mb-4 text-[10px] sm:text-xs text-slate-400 font-semibold whitespace-nowrap overflow-hidden">
                 <span id="books-count-label" data-i18n="loadingAcervo">Carregando acervo...</span>
-                <span id="data-source-label" class="flex items-center gap-1 text-moss-600">
+                <span id="data-source-label" class="flex items-center gap-1 text-moss-600 shrink-0">
                     <i class="fa-solid fa-circle-notch animate-spin"></i> <span data-i18n="syncingSheet">Sincronizando Planilha...</span>
                 </span>
             </div>
@@ -261,7 +261,7 @@
                         </a>
                     </div>
 
-                    <!-- Developer & Open-Source Social Integrations -->
+                    <!-- Developer & Open-Source Social Integrations (Anonymous Version) -->
                     <div class="mt-6 p-6 bg-slate-50 rounded-3xl border border-slate-200/60 flex flex-col md:flex-row items-center gap-6">
                         <div class="w-20 h-20 shrink-0 bg-white rounded-2xl shadow-md border border-slate-100 flex items-center justify-center text-navy-900">
                             <i class="fa-solid fa-code text-3xl text-moss-600"></i>
@@ -687,7 +687,7 @@
                 catHistologia: "Histologia",
                 catOutros: "Outros",
                 loadingAcervo: "Carregando acervo...",
-                syncingSheet: "Sincronizando Planilha...",
+                syncingSheet: "Sincronizando...",
                 emptyStateTitle: "Nenhum livro encontrado",
                 emptyStateSub: "Não encontramos correspondências com sua busca na planilha.",
                 aboutTitle: "O Foco da Bibli.on.med",
@@ -730,7 +730,7 @@
                 contribCatLabel: "Book Category",
                 contribSubmit: "Enviar Contribuição",
                 adminTitle: "Acesso do Administrador",
-                adminSub: "Esta área é restrita para o criador do projeto gerenciar o banco de dados e as planilhas do acervo.",
+                adminSub: "Esta área é restrita para o criador do projeto gerenciar o banco de dados e as fontes do acervo.",
                 adminPasskeyPlaceholder: "Digite a Chave de Acesso",
                 adminValidateBtn: "Validar Credenciais",
                 adminConfigTitle: "Configuração de Banco de Dados",
@@ -793,13 +793,13 @@
                 catHistologia: "Histología",
                 catOutros: "Otros",
                 loadingAcervo: "Cargando biblioteca...",
-                syncingSheet: "Sincronizando Planillas...",
+                syncingSheet: "Sincronizando...",
                 emptyStateTitle: "No se encontraron libros",
                 emptyStateSub: "No encontramos coincidencias con su búsqueda en la planilla.",
                 aboutTitle: "El Enfoque de Bibli.on.med",
                 aboutSub: "Apoyo Académico Sin Fines de Lucro",
                 aboutP1: "La rutina de un estudiante de medicina en América Latina está llena de desafíos. Además del horario de clases agotador, el costo de los libros técnicos y manuales clínicos de referencia internacional puede ser prohibitivo para la mayoría de los futuros médicos.",
-                aboutP2: "El objetivo de Bibli.on.med es simplificar la búsqueda y democratizar el acceso al conocimiento médico de calidad.",
+                aboutP2: "El objetivo de Bibli.on.med es simplificar a busca y democratizar el acceso al conocimiento médico de calidad.",
                 aboutShieldTitle: "🛡️ Compromiso con la Seguridad Biológica (¡y Digital!)",
                 aboutShieldDesc: "Todos los enlaces de descarga disponibles en la biblioteca están previamente verificados. Garantizamos que los archivos estén libres de virus, scripts maliciosos o anuncios abusivos. ¡Nos enfocamos solo en el PDF limpio!",
                 howItWorks: "¿Cómo funciona la biblioteca?",
@@ -836,7 +836,7 @@
                 contribCatLabel: "Categoría del Libro",
                 contribSubmit: "Enviar Contribución",
                 adminTitle: "Acceso de Administrador",
-                adminSub: "Esta área está restringida para que el creador del proyecto administre la base de datos y las planillas de la biblioteca.",
+                adminSub: "Esta área está restringida para que el creador del proyecto administre la base de datos y las fuentes de la biblioteca.",
                 adminPasskeyPlaceholder: "Escribe la Clave de Acceso",
                 adminValidateBtn: "Validar Credenciales",
                 adminConfigTitle: "Configuración de la Base de Datos",
@@ -899,7 +899,7 @@
                 catHistologia: "Histology",
                 catOutros: "Others",
                 loadingAcervo: "Loading collection...",
-                syncingSheet: "Syncing Spreadsheets...",
+                syncingSheet: "Syncing...",
                 emptyStateTitle: "No books found",
                 emptyStateSub: "We did not find any matches for your search in the spreadsheet.",
                 aboutTitle: "The Focus of Bibli.on.med",
@@ -910,7 +910,7 @@
                 aboutShieldDesc: "All download links provided in the library are previously verified. We guarantee that hosted files are free of viruses, malicious scripts, or abusive advertisements. We focus only on clean PDFs!",
                 howItWorks: "How does the library work?",
                 howStep1Title: "Specialized Curation:",
-                howStep1Desc: "Books divided by classical medical disciplines (Ananatomy, Physiology, Pathology, etc.).",
+                howStep1Desc: "Books divided by classical medical disciplines (Anatomy, Physiology, Pathology, etc.).",
                 howStep2Title: "Direct Links:",
                 howStep2Desc: "No annoying link shorteners, direct routing to high-speed servers (MediaFire/Google Drive).",
                 howStep3Title: "Dynamic Update:",
@@ -1233,7 +1233,7 @@
                         const hasCustom = activeUrls.some(url => url !== DEFAULT_SHEET_URL);
                         if (statusBadge) {
                             if (hasCustom) {
-                                statusBadge.textContent = currentLang === 'en' ? "Custom Sheet Connected" : currentLang === 'es' ? "Planilla Personalizada Conectada" : "Planilla Customizada Conectada";
+                                statusBadge.textContent = currentLang === 'en' ? "Custom Sheets Connected" : currentLang === 'es' ? "Planillas Personalizadas Conectadas" : "Planilhas Customizadas Conectadas";
                                 statusBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700";
                             } else {
                                 statusBadge.textContent = currentLang === 'en' ? "Official Sheet Active" : currentLang === 'es' ? "Planilla Oficial Activa" : "Planilla Oficial Ativa";
@@ -1241,7 +1241,7 @@
                             }
                         }
                         sourceLabel.innerHTML = hasCustom 
-                            ? `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Synced: Custom Base' : currentLang === 'es' ? 'Sincronizado: Base Personalizada' : 'Sincronizado: Base Customizada'}`
+                            ? `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Sincronizado: Base Customizada' : currentLang === 'es' ? 'Sincronizado: Base Personalizada' : 'Sincronizado: Base Customizada'}`
                             : `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Sincronizado: Base Oficial' : currentLang === 'es' ? 'Sincronizado: Base Oficial' : 'Sincronizado: Base Oficial'}`;
                     }
                 } catch (err) {
@@ -1305,7 +1305,7 @@
                 if (sourceLabel) {
                     const hasCustom = activeUrls.some(url => url !== DEFAULT_SHEET_URL);
                     if (hasCustom) {
-                        sourceLabel.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Custom Database Integrated' : currentLang === 'es' ? 'Base Personalizada Integrada' : 'Base Customizada Integrada'}`;
+                        sourceLabel.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Sincronizado: Base Customizada' : currentLang === 'es' ? 'Sincronizado: Base Personalizada' : 'Sincronizado: Base Customizada'}`;
                     } else {
                         sourceLabel.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Sincronizado: Base Oficial' : currentLang === 'es' ? 'Sincronizado: Base Oficial' : 'Sincronizado: Base Oficial'}`;
                     }
@@ -1546,11 +1546,11 @@
             
             const currentLang = userProfile.lang || 'pt';
             if (currentLang === 'en') {
-                countLabel.textContent = `Showing ${filteredBooks.length} book(s) of ${books.length} available`;
+                countLabel.textContent = `Showing ${filteredBooks.length} of ${books.length} books`;
             } else if (currentLang === 'es') {
-                countLabel.textContent = `Mostrando ${filteredBooks.length} libro(s) de ${books.length} disponibles`;
+                countLabel.textContent = `Mostrando ${filteredBooks.length} de ${books.length} libros`;
             } else {
-                countLabel.textContent = `Mostrando ${filteredBooks.length} livro(s) de ${books.length} disponíveis`;
+                countLabel.textContent = `Mostrando ${filteredBooks.length} de ${books.length} livros`;
             }
 
             if (filteredBooks.length === 0) {
@@ -1967,7 +1967,7 @@
                 localStorage.setItem('biblionmed_local_user', JSON.stringify(userProfile));
             }
             updateUIWithProfile();
-            showToast("Perfil atualizado!", "success");
+            showToast("Perfil updated!", "success");
             closeProfileModal();
         };
 
