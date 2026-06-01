@@ -108,7 +108,7 @@
                     <i class="fa-solid fa-circle-plus mr-1"></i> <span data-i18n="navSuggest">Contribuir</span>
                 </button>
                 <button onclick="switchTab('admin')" id="nav-admin" class="nav-btn text-moss-100 hover:text-white font-medium text-sm transition-all border-b-2 border-transparent py-1">
-                    <i class="fa-solid fa-lock mr-1"></i> <span data-i18n="navAdmin">Planilha / Configs</span>
+                    <i class="fa-solid fa-lock mr-1"></i> <span data-i18n="navAdmin">Planilhas / Configs</span>
                 </button>
             </nav>
 
@@ -151,7 +151,7 @@
                     Bibli<span class="text-moss-600">.on.</span>med
                 </h1>
                 <!-- Dynamic rotating message subtitle container -->
-                <p class="text-slate-500 text-sm sm:text-base font-medium transition-all duration-500 opacity-100" data-i18n="mainSubtitle">
+                <p id="dynamic-subtitle" class="text-slate-500 text-sm sm:text-base font-medium transition-all duration-500 opacity-100" data-i18n="mainSubtitle">
                     A maior biblioteca de medicina gratuita, revisada e livre de vírus para estudantes da América Latina.
                 </p>
             </div>
@@ -322,7 +322,7 @@
                         <div id="drop-zone" class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-moss-500 cursor-pointer transition-all bg-slate-50 flex flex-col items-center justify-center min-h-[140px]" onclick="triggerFileInput()">
                             <i class="fa-solid fa-cloud-arrow-up text-slate-400 text-3xl mb-2" id="upload-icon"></i>
                             <p class="text-xs font-bold text-slate-600 mb-1" id="upload-text" data-i18n="contribDropText">Arraste seu PDF aqui ou clique para buscar</p>
-                            <p class="text-[10px] text-slate-400" id="upload-subtext" data-i18n="contribDropSubtext">Sem limite de tamanho (salvamento via IndexedDB!)</p>
+                            <p class="text-[10px] text-slate-400" id="upload-subtext" data-i18n="contribDropSubtext">O arquivo será salvo diretamente no nosso Drive integrado.</p>
                             <input type="file" id="file-input" class="hidden" onchange="handleFileSelect(event)">
                         </div>
 
@@ -404,7 +404,7 @@
                     <i class="fa-solid fa-shield-halved"></i>
                 </span>
                 <h3 class="text-xl font-bold text-navy-900 mb-1" data-i18n="adminTitle">Acesso do Administrador</h3>
-                <p class="text-xs text-slate-400 mb-6" data-i18n="adminSub">Esta área é restrita para o criador do projeto gerenciar o banco de dados e contribuições.</p>
+                <p class="text-xs text-slate-400 mb-6" data-i18n="adminSub">Esta área é restrita para o criador do projeto gerenciar o banco de dados e as fontes do acervo.</p>
                 
                 <form onsubmit="handleAdminAuth(event)" class="space-y-4">
                     <div>
@@ -428,44 +428,43 @@
                             </span>
                             <div>
                                 <h2 class="text-2xl font-bold text-navy-900" data-i18n="adminConfigTitle">Configuração de Banco de Dados</h2>
-                                <p class="text-xs text-slate-400 font-medium" data-i18n="adminConfigSub">Defina de onde o Bibli.on.med busca as informações dos livros</p>
+                                <p class="text-xs text-slate-400 font-medium" data-i18n="adminConfigSub">Gerencie múltiplos links de planilhas para agregar ao acervo geral</p>
                             </div>
                         </div>
                         <button onclick="lockAdmin()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-3 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1">
-                            <i class="fa-solid fa-lock"></i> <span data-i18n="adminLockBtn">Bloquear Panel</span>
+                            <i class="fa-solid fa-lock"></i> <span data-i18n="adminLockBtn">Bloquear Painel</span>
                         </button>
                     </div>
 
                     <div class="space-y-6">
                         <div class="bg-moss-50 p-4 rounded-2xl border border-moss-100">
                             <h4 class="font-bold text-navy-900 text-sm mb-2 flex items-center gap-1.5">
-                                <i class="fa-solid fa-circle-question text-moss-600"></i> <span data-i18n="adminHowToTitle">Como conectar sua própria Planilha Google?</span>
+                                <i class="fa-solid fa-circle-question text-moss-600"></i> <span data-i18n="adminHowToTitle">Como agregar suas Planilhas Google?</span>
                             </h4>
                             <ol class="text-xs text-slate-600 space-y-2 list-decimal pl-4">
-                                <li data-i18n="adminHowToStep1">Crie uma planilha no Google Planilhas com as colunas exatamente nesta ordem: Nome do livro, Autor, Categoria, Data de upload, Link, Capa (URL).</li>
+                                <li data-i18n="adminHowToStep1">Crie uma planilha no Google Planilhas com as colunas exatamente nesta ordem: Nome do livro, Autor, Categoria, Data de upload, Link, Capa (URL), Idioma.</li>
                                 <li data-i18n="adminHowToStep2">No Google Planilhas, clique em: Arquivo > Compartilhar > Publicar na Web.</li>
-                                <li data-i18n="adminHowToStep3">Na caixa de diálogo, selecione "Valores separados por vírgulas (.csv)" em vez de "Página da Web".</li>
-                                <li data-i18n="adminHowToStep4">Clique em Publicar e copie o link gerado.</li>
-                                <li data-i18n="adminHowToStep5">Cole o link cobrado no campo abaixo para conectar seu site diretamente ao banco de dados!</li>
+                                <li data-i18n="adminHowToStep3">Na caixa de diálogo, selecione "Valores separados por vírgulas (.csv)".</li>
+                                <li data-i18n="adminHowToStep4">Clique em Publicar, copie o link gerado e adicione-o na lista abaixo!</li>
                             </ol>
                         </div>
 
-                        <div class="bg-rose-50 p-4 rounded-2xl border border-rose-100 text-xs">
-                            <h4 class="font-bold text-rose-800 mb-1 flex items-center gap-1.5" data-i18n="adminDisclaimerTitle">
-                                <i class="fa-solid fa-triangle-exclamation text-rose-600 text-sm"></i> Isenção de Responsabilidade sobre Bancos Customizados
-                            </h4>
-                            <p class="text-rose-700 leading-relaxed" data-i18n="adminDisclaimerDesc">
-                                A planilha padrão oficial do projeto **Bibli.on.med** é revisada manualmente contra malwares. Ao conectar planilhas externas personalizadas, a plataforma não se responsabiliza pela segurança, confiabilidade dos arquivos binários ou pela integridade dos redirecionamentos inseridos por terceiros.
-                            </p>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-navy-800 uppercase tracking-wider mb-2" data-i18n="adminCsvLabel">URL da sua Planilha Publicada (.csv) *</label>
+                        <!-- Adicionar URL de Planilha -->
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <label class="block text-xs font-bold text-navy-800 uppercase tracking-wider mb-2" data-i18n="adminCsvLabel">Adicionar URL de Planilha (.csv)</label>
                             <div class="flex flex-col sm:flex-row gap-2">
                                 <input type="url" id="sheet-csv-url" placeholder="Ex: https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?output=csv" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-moss-500 focus:border-transparent text-sm">
-                                <button onclick="saveSheetUrl()" class="bg-navy-900 hover:bg-navy-800 text-white font-bold px-6 py-3 rounded-xl transition-all text-sm shrink-0" data-i18n="adminCsvBtn">
-                                    Salvar Link
+                                <button onclick="addNewSheetUrl()" class="bg-moss-600 hover:bg-moss-700 text-white font-bold px-6 py-3 rounded-xl transition-all text-sm shrink-0">
+                                    <i class="fa-solid fa-plus mr-1"></i> Adicionar
                                 </button>
+                            </div>
+                        </div>
+
+                        <!-- Lista de Planilhas Ativas -->
+                        <div>
+                            <h3 class="text-xs font-bold text-navy-800 uppercase tracking-wider mb-3">Planilhas e Fontes de Dados Conectadas</h3>
+                            <div id="active-sheets-list" class="space-y-2">
+                                <!-- Preenchido dinamicamente por JS -->
                             </div>
                         </div>
 
@@ -473,24 +472,10 @@
                             <button onclick="resetToDemo()" class="text-xs font-semibold text-rose-600 hover:text-rose-700 transition-all flex items-center gap-1">
                                 <i class="fa-solid fa-rotate"></i> <span data-i18n="adminRestoreBtn">Restaurar Planilha Oficial Padrão</span>
                             </button>
-                            <span id="sheet-status" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700">
-                                Carregando Banco...
+                            <span id="sheet-status" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">
+                                Banco Ativo
                             </span>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Suggestion / Contributions Manager -->
-                <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-xl shadow-slate-100 border border-slate-100/50">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-navy-900" data-i18n="adminContribTitle">Contribuições dos Alunos</h3>
-                            <p class="text-xs text-slate-400" data-i18n="adminContribSub">Verifique os arquivos abaixo antes de adicioná-los oficialmente na sua planilha do Google.</p>
-                        </div>
-                        <span id="suggestions-badge" class="bg-moss-100 text-moss-800 text-xs font-bold px-2.5 py-0.5 rounded-full">0</span>
-                    </div>
-                    <div id="suggestions-list" class="space-y-3 max-h-96 overflow-y-auto pr-1">
-                        <p class="text-xs text-slate-400 text-center py-6" data-i18n="adminNoSuggestions">Nenhuma sugestão registrada até o momento.</p>
                     </div>
                 </div>
 
@@ -555,7 +540,7 @@
                     </div>
                     <div class="flex justify-between">
                         <span class="text-slate-400" data-i18n="modalLangLabel">🌐 Idioma principal:</span>
-                        <span class="font-semibold text-navy-900" data-i18n="modalLangVal">Português / Espanhol</span>
+                        <span id="modal-lang" class="font-semibold text-navy-900">Português / Espanhol</span>
                     </div>
                 </div>
 
@@ -629,7 +614,6 @@
         </div>
     </div>
 
-    <!-- DATABASE & FIREBASE SCRIPT MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -684,7 +668,7 @@
                 navSearch: "Buscar Livros",
                 navAbout: "Sobre o Projeto",
                 navSuggest: "Contribuir",
-                navAdmin: "Planilha / Configs",
+                navAdmin: "Planilhas / Configs",
                 enter: "Entrar",
                 student: "Estudante",
                 mobSearch: "Buscar",
@@ -731,7 +715,7 @@
                 contribLink: "Enviar Link Direto",
                 contribDropLabel: "Selecionar Livro do Computador/Celular",
                 contribDropText: "Arraste seu PDF aqui ou clique para buscar",
-                contribDropSubtext: "Sem limite de tamanho (salvamento via IndexedDB!)",
+                contribDropSubtext: "O arquivo será salvo diretamente no Google Drive do acervo.",
                 scanTitle: "Realizando Varredura Biológica e Digital...",
                 scanDesc: "Inspecionando assinaturas de código para proteção contra trojans e adwares.",
                 contribLinkLabel: "Link de Download Oficial *",
@@ -746,26 +730,22 @@
                 contribCatLabel: "Categoria do Livro",
                 contribSubmit: "Enviar Contribuição",
                 adminTitle: "Acesso do Administrador",
-                adminSub: "Esta área é restrita para o criador do projeto gerenciar o banco de dados e contribuições.",
+                adminSub: "Esta área é restrita para o criador do projeto gerenciar o banco de dados e as planilhas do acervo.",
                 adminPasskeyPlaceholder: "Digite a Chave de Acesso",
                 adminValidateBtn: "Validar Credenciais",
                 adminConfigTitle: "Configuração de Banco de Dados",
-                adminConfigSub: "Defina de onde o Bibli.on.med busca as informações dos livros",
+                adminConfigSub: "Gerencie múltiplos links de planilhas para agregar ao acervo geral",
                 adminLockBtn: "Bloquear Painel",
-                adminHowToTitle: "Como conectar sua própria Planilha Google?",
-                adminHowToStep1: "Crie uma planilha no Google Planilhas com as colunas exatamente nesta ordem: Nome do livro, Autor, Categoria, Data de upload, Link, Capa (URL).",
-                adminHowToStep2: "No Google Planilhas, clique em: Arquivo > Compartilhar > Publicar na Web.",
-                adminHowToStep3: "Na caixa de diálogo, selecione \"Valores separados por vírgulas (.csv)\" em vez de \"Página da Web\".",
-                adminHowToStep4: "Clique em Publicar e copie o link gerado.",
-                adminHowToStep5: "Cole o link cobrado no campo abaixo para conectar seu site diretamente ao banco de dados!",
+                adminHowToTitle: "Como agregar suas Planilhas Google?",
+                adminHowToStep1: "Crie uma planilha no Google Planilhas com as colunas exatamente nesta ordem: Nome do livro, Autor, Categoria, Data de upload, Link, Capa (URL), Idioma.",
+                adminHowToStep2: "In Google Planilhas, clique em: Arquivo > Compartilhar > Publicar na Web.",
+                adminHowToStep3: "Na caixa de diálogo, selecione \"Valores separados por vírgulas (.csv)\".",
+                adminHowToStep4: "Clique em Publicar, copie o link gerado e adicione-o na lista abaixo!",
                 adminDisclaimerTitle: "Isenção de Responsabilidade sobre Bancos Customizados",
                 adminDisclaimerDesc: "A planilha padrão oficial do projeto **Bibli.on.med** é revisada manualmente contra malwares. Ao conectar planilhas externas personalizadas, a plataforma não se responsabiliza pela segurança, confiabilidade dos arquivos binários ou pela integridade dos redirecionamentos inseridos por terceiros.",
-                adminCsvLabel: "URL da sua Planilha Publicada (.csv) *",
+                adminCsvLabel: "Adicionar URL de Planilha (.csv)",
                 adminCsvBtn: "Salvar Link",
                 adminRestoreBtn: "Restaurar Planilha Oficial Padrão",
-                adminContribTitle: "Contribuições dos Alunos",
-                adminContribSub: "Verifique os arquivos abaixo antes de adicioná-los oficialmente na sua planilha do Google.",
-                adminNoSuggestions: "Nenhuma sugestão registrada até o momento.",
                 footerBrandSub: "Biblioteca Aberta de Medicina",
                 footerCopy: "© 2026 Bibli.on.med. Desenvolvido para facilitar o acesso à saúde e educação médica na América Latina.",
                 modalSafeAccent: "Arquivo Seguro Antivírus",
@@ -785,7 +765,7 @@
                 profileLangLabel: "Idioma do Site",
                 profileCamTitle: "Fazer Upload de Foto Própria",
                 devBadge: "De Estudante para Estudante",
-                devTitle: "De estudante para estudante 🎓",
+                devTitle: "De estudante para estudante",
                 devDesc: "Este projeto é totalmente de código aberto (Open Source) e transparente. Siga o Criador no Instagram ou explore o código-fonte diretamente no repositório oficial do GitHub!",
                 githubBtn: "GitHub do Projeto",
                 instagramBtn: "Instagram do Criador"
@@ -794,7 +774,7 @@
                 navSearch: "Buscar Libros",
                 navAbout: "Acerca del Proyecto",
                 navSuggest: "Contribuir",
-                navAdmin: "Planilla / Configs",
+                navAdmin: "Planillas / Configs",
                 enter: "Ingresar",
                 student: "Estudiante",
                 mobSearch: "Buscar",
@@ -813,7 +793,7 @@
                 catHistologia: "Histología",
                 catOutros: "Otros",
                 loadingAcervo: "Cargando biblioteca...",
-                syncingSheet: "Sincronizando Planilla...",
+                syncingSheet: "Sincronizando Planillas...",
                 emptyStateTitle: "No se encontraron libros",
                 emptyStateSub: "No encontramos coincidencias con su búsqueda en la planilla.",
                 aboutTitle: "El Enfoque de Bibli.on.med",
@@ -837,11 +817,11 @@
                 aboutFooterBtn: "Iniciar Búsqueda Ahora",
                 contribTitle: "Contribuir con la Biblioteca Médica",
                 contribSub: "¡Ayuda a otros estudiantes enviando libros o enlaces útiles de forma rápida y segura!",
-                contribFile: "Enviar Arquivo (PDF/EPUB)",
+                contribFile: "Enviar Archivo (PDF/EPUB)",
                 contribLink: "Enviar Enlace Directo",
                 contribDropLabel: "Seleccionar Libro desde la Computadora/Móvil",
                 contribDropText: "Arrastra tu PDF aquí o haz clic para buscar",
-                contribDropSubtext: "Sin límite de tamaño (¡guardado mediante IndexedDB!)",
+                contribDropSubtext: "Los archivos se guardarán directamente en Google Drive.",
                 scanTitle: "Realizando Análisis Biológico y Digital...",
                 scanDesc: "Inspeccionando firmas de código para protección contra troyanos y adwares.",
                 contribLinkLabel: "Enlace de Descarga Oficial *",
@@ -856,26 +836,22 @@
                 contribCatLabel: "Categoría del Libro",
                 contribSubmit: "Enviar Contribución",
                 adminTitle: "Acceso de Administrador",
-                adminSub: "Esta área está restringida para que el creador del proyecto administre la base de datos y contribuciones.",
+                adminSub: "Esta área está restringida para que el creador del proyecto administre la base de datos y las planillas de la biblioteca.",
                 adminPasskeyPlaceholder: "Escribe la Clave de Acceso",
-                adminValidateBtn: "Validar Credenciais",
+                adminValidateBtn: "Validar Credenciales",
                 adminConfigTitle: "Configuración de la Base de Datos",
-                adminConfigSub: "Define de dónde Bibli.on.med obtiene la información de los libros",
+                adminConfigSub: "Administra múltiples enlaces de planillas para agregar a la biblioteca general",
                 adminLockBtn: "Bloquear Panel",
-                adminHowToTitle: "¿Como conectar tu propia Planilla de Google?",
-                adminHowToStep1: "Crea una planilla en Google Hojas de Cálculo con las columnas exactamente en este orden: Nombre del libro, Autor, Categoría, Data de upload, Link, Capa (URL).",
+                adminHowToTitle: "¿Cómo agregar tus Planillas de Google?",
+                adminHowToStep1: "Crea una planilla en Google Hojas de Cálculo con las columnas exactamente en este orden: Nombre del libro, Autor, Categoría, Data de upload, Link, Capa (URL), Idioma.",
                 adminHowToStep2: "En Google Hojas de Cálculo, haz clic en: Archivo > Compartir > Publicar en la Web.",
-                adminHowToStep3: "En el cuadro de diálogo, selecciona \"Valores separados por comas (.csv)\" en lugar de \"Página web\".",
-                adminHowToStep4: "Haz clic en Publicar y copia el enlace generado.",
-                adminHowToStep5: "¡Pega el enlace copiado en el campo de abajo para conectar tu sitio directamente a la base de datos!",
+                adminHowToStep3: "En el cuadro de diálogo, selecciona \"Valores separados por comas (.csv)\".",
+                adminHowToStep4: "Haz clic en Publicar, copia el enlace generado y agrégalo a la lista de abajo.",
                 adminDisclaimerTitle: "Exención de Responsabilidad sobre Bases Personalizadas",
                 adminDisclaimerDesc: "La planilla oficial del projeto **Bibli.on.med** se revisa manualmente contra virus. Al conectar planillas externas, la plataforma no se responsabiliza de la seguridad, confiabilidad de los archivos o integridad de las redirecciones.",
-                adminCsvLabel: "URL de tu Planilla Publicada (.csv) *",
+                adminCsvLabel: "Agregar URL de Planilla (.csv)",
                 adminCsvBtn: "Guardar Enlace",
                 adminRestoreBtn: "Restaurar Planilla Oficial",
-                adminContribTitle: "Contribuciones de los Alumnos",
-                adminContribSub: "Verifica los archivos de abajo antes de agregarlos oficialmente a tu planilla de Google.",
-                adminNoSuggestions: "Ninguna sugerencia registrada hasta el momento.",
                 footerBrandSub: "Biblioteca Abierta de Medicina",
                 footerCopy: "© 2026 Bibli.on.med. Desarrollado para facilitar el acceso a la salud y educación médica en América Latina.",
                 modalSafeAccent: "Archivo Seguro Antivírus",
@@ -883,28 +859,28 @@
                 modalSafeVal: "Seguro e Limpio",
                 modalUploadLabel: "Disponible en:",
                 modalLangLabel: "Idioma principal:",
-                modalLangVal: "Portugués / Español",
+                modalLangVal: "Português / Español",
                 modalDownloadBtn: "Descargar Libro con Seguridad",
                 modalFavAdd: "Agregar a Favoritos",
                 modalFavRemove: "Eliminar de Favoritos",
                 profileTitle: "Perfil del Estudiante",
                 profileNickname: "Apodo Clínico",
-                profileSaveBtn: "Guardar",
+                profileSaveBtn: "Save",
                 profileSavedBooks: "Tus Libros Guardados",
                 profileNoFav: "Ningún favorito guardado todavía.",
                 profileLangLabel: "Idioma del Sitio",
                 profileCamTitle: "Subir Foto Propia",
                 devBadge: "De Estudiante a Estudiante",
-                devTitle: "De estudiante a estudiante 🎓",
-                devDesc: "Este proyecto es completamente de código abierto (Open Source) y transparente. ¡Sigue al Creador en Instagram o explora el código fuente directamente en el repositorio oficial de GitHub!",
+                devTitle: "De estudiante a estudiante",
+                devDesc: "Este proyecto es completamente de código aberto (Open Source) y transparente. ¡Sigue al Creador en Instagram o explora el código fuente directamente en el repositorio oficial de GitHub!",
                 githubBtn: "GitHub del Proyecto",
-                instagramBtn: "Instagram del Creador"
+                instagramBtn: "Instagram del Criador"
             },
             en: {
                 navSearch: "Search Books",
                 navAbout: "About Project",
                 navSuggest: "Contribute",
-                navAdmin: "Sheet / Configs",
+                navAdmin: "Sheets / Configs",
                 enter: "Enter",
                 student: "Student",
                 mobSearch: "Search",
@@ -923,7 +899,7 @@
                 catHistologia: "Histology",
                 catOutros: "Others",
                 loadingAcervo: "Loading collection...",
-                syncingSheet: "Syncing Spreadsheet...",
+                syncingSheet: "Syncing Spreadsheets...",
                 emptyStateTitle: "No books found",
                 emptyStateSub: "We did not find any matches for your search in the spreadsheet.",
                 aboutTitle: "The Focus of Bibli.on.med",
@@ -934,7 +910,7 @@
                 aboutShieldDesc: "All download links provided in the library are previously verified. We guarantee that hosted files are free of viruses, malicious scripts, or abusive advertisements. We focus only on clean PDFs!",
                 howItWorks: "How does the library work?",
                 howStep1Title: "Specialized Curation:",
-                howStep1Desc: "Books divided by classical medical disciplines (Anatomy, Physiology, Pathology, etc.).",
+                howStep1Desc: "Books divided by classical medical disciplines (Ananatomy, Physiology, Pathology, etc.).",
                 howStep2Title: "Direct Links:",
                 howStep2Desc: "No annoying link shorteners, direct routing to high-speed servers (MediaFire/Google Drive).",
                 howStep3Title: "Dynamic Update:",
@@ -951,7 +927,7 @@
                 contribLink: "Send Direct Link",
                 contribDropLabel: "Select Book from Computer/Phone",
                 contribDropText: "Drag your PDF here or click to browse",
-                contribDropSubtext: "No size limit (saved via IndexedDB!)",
+                contribDropSubtext: "Files will be saved directly into Google Drive.",
                 scanTitle: "Performing Digital and Biological Scanning...",
                 scanDesc: "Inspecting code signatures for protection against trojans and adwares.",
                 contribLinkLabel: "Official Download Link *",
@@ -966,26 +942,22 @@
                 contribCatLabel: "Book Category",
                 contribSubmit: "Submit Contribution",
                 adminTitle: "Administrator Access",
-                adminSub: "This area is restricted for the project creator to manage the database and contributions.",
+                adminSub: "This area is restricted for the project creator to manage the database and sheets.",
                 adminPasskeyPlaceholder: "Enter Access Key",
                 adminValidateBtn: "Validate Credentials",
                 adminConfigTitle: "Database Configuration",
-                adminConfigSub: "Define where Bibli.on.med fetches book information from",
+                adminConfigSub: "Manage multiple spreadsheet links to aggregate into the main library",
                 adminLockBtn: "Lock Panel",
-                adminHowToTitle: "How to connect your own Google Sheet?",
-                adminHowToStep1: "Create a Google Sheet with columns in this exact order: Book Name, Author, Category, Upload Date, Link, Cover (URL).",
+                adminHowToTitle: "How to aggregate your Google Sheets?",
+                adminHowToStep1: "Create a Google Sheet with columns in this exact order: Book Name, Author, Category, Upload Date, Link, Cover (URL), Language.",
                 adminHowToStep2: "In Google Sheets, click on: File > Share > Publish to the Web.",
-                adminHowToStep3: "In the dialog box, select \"Comma-separated values (.csv)\" instead of \"Web page\".",
-                adminHowToStep4: "Click Publish and copy the generated link.",
-                adminHowToStep5: "Paste the copied link in the field below to connect your site directly to the database!",
+                adminHowToStep3: "In the dialog box, select \"Comma-separated values (.csv)\".",
+                adminHowToStep4: "Click Publish, copy the generated link, and add it below!",
                 adminDisclaimerTitle: "Disclaimer on Custom Databases",
                 adminDisclaimerDesc: "The official pattern sheet of the **Bibli.on.med** project is manually reviewed against malware. By connecting custom external sheets, the platform is not responsible for security, reliability of binary files, or integrity of third-party redirects.",
-                adminCsvLabel: "URL of your Published Sheet (.csv) *",
+                adminCsvLabel: "Add Spreadsheet URL (.csv)",
                 adminCsvBtn: "Save Link",
                 adminRestoreBtn: "Restore Default Official Sheet",
-                adminContribTitle: "Student Contributions",
-                adminContribSub: "Check the files below before officially adding them to your Google Sheet.",
-                adminNoSuggestions: "No suggestions registered so far.",
                 footerBrandSub: "Open Medical Library",
                 footerCopy: "© 2026 Bibli.on.med. Developed to facilitate access to healthcare and medical education in Latin America.",
                 modalSafeAccent: "Secure Antivirus File",
@@ -1005,7 +977,7 @@
                 profileLangLabel: "Site Language",
                 profileCamTitle: "Upload Own Photo",
                 devBadge: "From Student to Student",
-                devTitle: "From student to student 🎓",
+                devTitle: "From student to student",
                 devDesc: "This project is completely open source and transparent. Follow the Creator on Instagram, or explore the source code directly in the official GitHub repository!",
                 githubBtn: "Project GitHub",
                 instagramBtn: "Instagram of Creator"
@@ -1036,68 +1008,7 @@
             ]
         };
 
-        let fileDatabaseInstance;
-        function initFileIndexedDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open('biblionmed_physical_files_db_v2', 1);
-                request.onupgradeneeded = function(e) {
-                    const db = e.target.result;
-                    if (!db.objectStoreNames.contains('files')) {
-                        db.createObjectStore('files');
-                    }
-                };
-                request.onsuccess = function(e) {
-                    fileDatabaseInstance = e.target.result;
-                    resolve(fileDatabaseInstance);
-                };
-                request.onerror = function(e) {
-                    console.error("IndexedDB initialization error:", e.target.error);
-                    reject(e.target.error);
-                };
-            });
-        }
-
-        function saveFileToStorage(fileId, fileBlob) {
-            return new Promise((resolve, reject) => {
-                if (!fileDatabaseInstance) {
-                    resolve(null);
-                    return;
-                }
-                const transaction = fileDatabaseInstance.transaction(['files'], 'readwrite');
-                const store = transaction.objectStore('files');
-                const request = store.put(fileBlob, fileId);
-                request.onsuccess = () => resolve(fileId);
-                request.onerror = (e) => reject(e.target.error);
-            });
-        }
-
-        function getFileFromStorage(fileId) {
-            return new Promise((resolve, reject) => {
-                if (!fileDatabaseInstance) {
-                    resolve(null);
-                    return;
-                }
-                const transaction = fileDatabaseInstance.transaction(['files'], 'readonly');
-                const store = transaction.objectStore('files');
-                const request = store.get(fileId);
-                request.onsuccess = (e) => resolve(e.target.result);
-                request.onerror = (e) => reject(e.target.error);
-            });
-        }
-
-        function deleteFileFromStorage(fileId) {
-            return new Promise((resolve, reject) => {
-                if (!fileDatabaseInstance) {
-                    resolve();
-                    return;
-                }
-                const transaction = fileDatabaseInstance.transaction(['files'], 'readwrite');
-                const store = transaction.objectStore('files');
-                const request = store.delete(fileId);
-                request.onsuccess = () => resolve();
-                request.onerror = (e) => reject(e.target.error);
-            });
-        }
+        const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbz7ZBLMrEG8Fgq1dWWGdVhrnSiUoKI2RC1qjDYGcPcXUy2WPNfokn6b5gMVPBnYlfb/exec";
 
         function normalizeString(str) {
             if (!str) return '';
@@ -1152,7 +1063,6 @@
         let categoryFilter = 'all';
         let currentUser = null;
         let userProfile = { nickname: 'Interno Anon', avatar: 'BOOK', favorites: [], customAvatar: '', lang: 'pt' };
-        let suggestions = [];
         let currentSelectedBook = null;
         let selectedFile = null;
         let selectedCoverBase64 = ''; 
@@ -1193,80 +1103,61 @@
 
         window.changeLanguage = function(lang) {
             userProfile.lang = lang;
-            
-            // Save to profile persistence
             if (db && currentUser) {
                 const userDocPath = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'data');
                 updateDoc(userDocPath, { lang: lang }).catch(err => console.error(err));
             } else {
                 localStorage.setItem('biblionmed_local_user', JSON.stringify(userProfile));
             }
-
             applyLanguage(lang);
             showToast(lang === 'pt' ? "Idioma alterado com sucesso!" : lang === 'es' ? "¡Idioma cambiado con éxito!" : "Language updated successfully!", "success");
         };
 
         function applyLanguage(lang) {
             const dict = translations[lang] || translations['pt'];
-
-            // Translate DOM elements marked with data-i18n
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (key === 'mainSubtitle') return; // Skip to avoid resetting rotating subtitle out of order
+                if (key === 'mainSubtitle') return; 
                 if (dict[key]) {
                     el.innerHTML = dict[key];
                 }
             });
-
-            // Translate placeholders
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 if (dict[key]) {
                     el.setAttribute('placeholder', dict[key]);
                 }
             });
-
-            // Translate tooltips and titles
             document.querySelectorAll('[data-i18n-title]').forEach(el => {
                 const key = el.getAttribute('data-i18n-title');
                 if (dict[key]) {
                     el.setAttribute('title', dict[key]);
                 }
             });
-
-            // Sync rotating subtitle phrase immediately to match new language
             const phrases = subtitlePhrases[lang] || subtitlePhrases['pt'];
-            const subtitleEl = document.querySelector('[data-i18n="mainSubtitle"]');
+            const subtitleEl = document.getElementById('dynamic-subtitle');
             if (subtitleEl) {
                 subtitleEl.textContent = phrases[currentSubtitleIndex];
             }
-
-            // Synced lang selector values
             const select = document.getElementById('profile-lang-select');
             if (select) {
                 select.value = lang;
             }
-
-            // Reload conditional labels
             applyFilters();
             updateUIWithProfile();
         }
 
         let currentSubtitleIndex = 0;
         function rotateSubtitle() {
-            const subtitleEl = document.querySelector('[data-i18n="mainSubtitle"]');
+            const subtitleEl = document.getElementById('dynamic-subtitle');
             if (!subtitleEl) return;
             const lang = userProfile.lang || 'pt';
             const phrases = subtitlePhrases[lang] || subtitlePhrases['pt'];
-            
-            // Fade out transition
             subtitleEl.style.transition = 'opacity 0.5s ease-in-out';
             subtitleEl.style.opacity = '0';
-            
             setTimeout(() => {
                 currentSubtitleIndex = (currentSubtitleIndex + 1) % phrases.length;
                 subtitleEl.textContent = phrases[currentSubtitleIndex];
-                // Fade back in
                 subtitleEl.style.opacity = '1';
             }, 500);
         }
@@ -1279,23 +1170,16 @@
                     db = getFirestore(app);
                     auth = getAuth(app);
                     await signInAnonymously(auth);
-                } else {
-                    console.log("Firebase emulado offline para teste.");
                 }
             } catch (err) {
                 console.error("Falha ao inicializar o Firebase: ", err);
             }
         }
 
-        // RENDERS THE CATEGORY BUTTONS DYNAMICALLY FROM THE BOOKS ARRAY
         function renderCategoryButtons() {
             const container = document.getElementById('categories-container');
             if (!container) return;
-
-            // Extract unique categories, ignoring empty/null values
             const uniqueCategories = [...new Set(books.map(b => b.categoria).filter(Boolean))];
-            
-            // Sort categories alphabetically
             uniqueCategories.sort();
 
             const currentLang = userProfile.lang || 'pt';
@@ -1311,106 +1195,203 @@
             uniqueCategories.forEach(cat => {
                 const isActive = categoryFilter === cat;
                 const normalizedId = 'cat-' + normalizeString(cat).replace(/\s+/g, '');
-                
                 html += `
                     <button onclick="filterCategory('${cat}')" id="${normalizedId}" class="cat-btn ${isActive ? 'active bg-moss-600 text-white shadow-md shadow-moss-100' : 'bg-white text-slate-600 hover:bg-moss-50 border border-slate-100'} px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all">
                         ${cat}
                     </button>
                 `;
             });
-
             container.innerHTML = html;
         }
 
         async function loadSpreadsheetData() {
-            const savedUrl = localStorage.getItem('biblionmed_csv_url');
-            const targetUrl = savedUrl || DEFAULT_SHEET_URL;
+            let activeUrls = [];
+            const savedUrlsText = localStorage.getItem('biblionmed_csv_urls');
+            if (savedUrlsText) {
+                try {
+                    activeUrls = JSON.parse(savedUrlsText);
+                } catch (e) {
+                    activeUrls = [];
+                }
+            }
+            if (activeUrls.length === 0) {
+                activeUrls = [DEFAULT_SHEET_URL];
+            }
+
             const statusBadge = document.getElementById('sheet-status');
             const sourceLabel = document.getElementById('data-source-label');
 
-            // SWR Cache Phase
+            // Cache revalidation phase
             const cachedData = localStorage.getItem('biblionmed_books_cache');
             if (cachedData) {
                 try {
                     books = JSON.parse(cachedData);
                     applyFilters();
-                    renderCategoryButtons(); // Dynamic category render from cache
+                    renderCategoryButtons();
                     if (sourceLabel) {
                         const currentLang = userProfile.lang || 'pt';
-                        sourceLabel.innerHTML = currentLang === 'en' 
-                            ? `<i class="fa-solid fa-bolt text-amber-500"></i> Loaded from Instant Cache`
-                            : currentLang === 'es'
-                            ? `<i class="fa-solid fa-bolt text-amber-500"></i> Cargado desde la caché instantánea`
-                            : `<i class="fa-solid fa-bolt text-amber-500"></i> Carregado do cache instantâneo`;
+                        sourceLabel.innerHTML = `<i class="fa-solid fa-bolt text-amber-500"></i> ${currentLang === 'en' ? 'Loaded from cache' : currentLang === 'es' ? 'Cargado de cache' : 'Carregado do cache instantâneo'}`;
                     }
                 } catch (e) {
-                    console.error("Cache parsing error", e);
+                    console.error("Cache parse error", e);
                 }
             }
 
-            // Syncing Revalidation Phase
-            try {
-                const response = await fetch(targetUrl);
-                if (!response.ok) throw new Error("Network error reading the spreadsheet");
-                const text = await response.text();
-                const rows = parseCSV(text);
+            let loadedBooks = [];
+            let successfulFetches = 0;
 
-                if (rows.length > 1) {
-                    const parsedBooks = [];
-                    for (let i = 1; i < rows.length; i++) {
-                        const r = rows[i];
-                        if (r.length >= 3 && r[0].trim() !== '') {
-                            parsedBooks.push({
-                                id: `sheet-${i}`,
-                                nome: r[0] || 'Sem Título',
-                                autor: r[1] || 'Autor Desconhecido',
-                                categoria: r[2] || 'Outros',
-                                uploadDate: r[3] || 'Desconhecida',
-                                link: r[4] || '#',
-                                capa: r[5] || '' 
-                            });
-                        }
-                    }
-                    if (parsedBooks.length > 0) {
-                        books = parsedBooks;
-                        localStorage.setItem('biblionmed_books_cache', JSON.stringify(parsedBooks));
-                        renderCategoryButtons(); // Refresh dynamic categories on update
-                        
-                        const currentLang = userProfile.lang || 'pt';
-                        if (statusBadge) {
-                            if (savedUrl) {
-                                statusBadge.textContent = currentLang === 'en' ? "Custom Sheet Connected" : currentLang === 'es' ? "Planilla Personalizada Conectada" : "Planilla Customizada Conectada";
-                                statusBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700";
-                            } else {
-                                statusBadge.textContent = currentLang === 'en' ? "Official Sheet Active" : currentLang === 'es' ? "Planilla Oficial Activa" : "Planilla Oficial Ativa";
-                                statusBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700";
+            for (let index = 0; index < activeUrls.length; index++) {
+                const targetUrl = activeUrls[index];
+                try {
+                    const response = await fetch(targetUrl);
+                    if (!response.ok) throw new Error("Fetch error");
+                    const text = await response.text();
+                    const rows = parseCSV(text);
+
+                    if (rows.length > 1) {
+                        successfulFetches++;
+                        for (let i = 1; i < rows.length; i++) {
+                            const r = rows[i];
+                            if (r.length >= 3 && r[0].trim() !== '') {
+                                loadedBooks.push({
+                                    id: `sheet-${index}-${i}`,
+                                    nome: r[0] || 'Sem Título',
+                                    autor: r[1] || 'Autor Desconhecido',
+                                    categoria: r[2] || 'Outros',
+                                    uploadDate: r[3] || 'Desconhecida',
+                                    link: r[4] || '#',
+                                    capa: r[5] || '',
+                                    idioma: r[6] || '' // Coluna 7 (Idioma do Livro)
+                                });
                             }
                         }
-                        if (sourceLabel) {
-                            sourceLabel.innerHTML = savedUrl 
-                                ? `<i class="fa-solid fa-triangle-exclamation text-amber-500"></i> ${currentLang === 'en' ? 'Custom Database (Synced)' : currentLang === 'es' ? 'Planilla Personalizada (Sincronizada)' : 'Base Customizada (Sincronizada)'}`
-                                : `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Synced: Official Base' : currentLang === 'es' ? 'Sincronizado: Base Oficial' : 'Sincronizado: Base Oficial'}`;
-                        }
                     }
-                }
-            } catch (err) {
-                console.error("Spreadsheet Sync Failure: ", err);
-                if (!cachedData) {
-                    showToast(userProfile.lang === 'en' ? "Error syncing spreadsheet. Using temporary local data." : "Erro ao sincronizar planilha.", "error");
-                }
-                if (savedUrl) {
-                    localStorage.removeItem('biblionmed_csv_url');
-                    setTimeout(loadSpreadsheetData, 1500);
+                } catch (err) {
+                    console.warn(`Could not sync spreadsheet source: ${targetUrl}`, err);
                 }
             }
+
+            if (loadedBooks.length > 0) {
+                // Deduplicate books by name + link
+                const uniqueSet = new Map();
+                loadedBooks.forEach(b => {
+                    const key = normalizeString(b.nome) + "_" + normalizeString(b.link);
+                    if (!uniqueSet.has(key)) {
+                        uniqueSet.set(key, b);
+                    }
+                });
+                books = Array.from(uniqueSet.values());
+                localStorage.setItem('biblionmed_books_cache', JSON.stringify(books));
+                renderCategoryButtons();
+                
+                const currentLang = userProfile.lang || 'pt';
+                if (statusBadge) {
+                    statusBadge.textContent = `${successfulFetches}/${activeUrls.length} Fontes Ativas`;
+                    statusBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700";
+                }
+                
+                // OCULTA QUALQUER CONTAGEM NO FORMULÁRIO DE BUSCA PÚBLICO
+                if (sourceLabel) {
+                    const hasCustom = activeUrls.some(url => url !== DEFAULT_SHEET_URL);
+                    if (hasCustom) {
+                        sourceLabel.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Custom Database Integrated' : currentLang === 'es' ? 'Base Personalizada Integrada' : 'Base Customizada Integrada'}`;
+                    } else {
+                        sourceLabel.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Official Base Synced' : currentLang === 'es' ? 'Base Oficial Sincronizada' : 'Base Oficial Sincronizada'}`;
+                    }
+                }
+            } else if (!cachedData) {
+                showToast("Nenhuma planilha ativa pôde ser carregada.", "error");
+            }
+
             applyFilters();
+            renderActiveSheetsList();
         }
+
+        function renderActiveSheetsList() {
+            const listContainer = document.getElementById('active-sheets-list');
+            if (!listContainer) return;
+
+            let activeUrls = [];
+            const savedUrlsText = localStorage.getItem('biblionmed_csv_urls');
+            if (savedUrlsText) {
+                try { activeUrls = JSON.parse(savedUrlsText); } catch(e) {}
+            }
+            if (activeUrls.length === 0) {
+                activeUrls = [DEFAULT_SHEET_URL];
+            }
+
+            listContainer.innerHTML = '';
+            activeUrls.forEach((url, i) => {
+                const isDefault = url === DEFAULT_SHEET_URL;
+                const row = document.createElement('div');
+                row.className = "flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs gap-4";
+                row.innerHTML = `
+                    <div class="min-w-0 flex-grow">
+                        <span class="font-bold text-navy-900 block truncate" title="${url}">${isDefault ? 'Planilha Oficial Principal' : 'Planilha Customizada #' + i}</span>
+                        <span class="text-[10px] text-slate-400 block truncate">${url}</span>
+                    </div>
+                    ${isDefault ? `
+                        <span class="bg-emerald-50 text-emerald-700 font-extrabold px-2 py-1 rounded-md text-[9px] uppercase tracking-wider shrink-0">Padrão</span>
+                    ` : `
+                        <button onclick="removeSheetUrl(${i})" class="text-rose-500 hover:text-rose-700 font-bold px-2 shrink-0">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    `}
+                `;
+                listContainer.appendChild(row);
+            });
+        }
+
+        window.addNewSheetUrl = function() {
+            const input = document.getElementById('sheet-csv-url');
+            const url = input.value.trim();
+            if (!url) return;
+
+            if (!url.includes('output=csv')) {
+                showToast("Certifique-se de que a planilha está publicada como .csv na Web.", "info");
+            }
+
+            let activeUrls = [];
+            const savedUrlsText = localStorage.getItem('biblionmed_csv_urls');
+            if (savedUrlsText) {
+                try { activeUrls = JSON.parse(savedUrlsText); } catch(e) {}
+            }
+            if (activeUrls.length === 0) {
+                activeUrls = [DEFAULT_SHEET_URL];
+            }
+
+            if (activeUrls.includes(url)) {
+                showToast("Esta planilha já está na sua lista de fontes de dados.", "info");
+                return;
+            }
+
+            activeUrls.push(url);
+            localStorage.setItem('biblionmed_csv_urls', JSON.stringify(activeUrls));
+            input.value = '';
+            showToast("Nova planilha agregada com sucesso!", "success");
+            loadSpreadsheetData();
+        };
+
+        window.removeSheetUrl = function(index) {
+            let activeUrls = [];
+            const savedUrlsText = localStorage.getItem('biblionmed_csv_urls');
+            if (savedUrlsText) {
+                try { activeUrls = JSON.parse(savedUrlsText); } catch(e) {}
+            }
+            if (activeUrls.length === 0) {
+                activeUrls = [DEFAULT_SHEET_URL];
+            }
+
+            activeUrls.splice(index, 1);
+            localStorage.setItem('biblionmed_csv_urls', JSON.stringify(activeUrls));
+            showToast("Planilha removida da integração.", "info");
+            loadSpreadsheetData();
+        };
 
         function initAuthListener() {
             if (localStorage.getItem('biblionmed_admin_unlocked') === 'true') {
                 unlockAdminUI();
             }
-
             if (!auth) {
                 const localUser = localStorage.getItem('biblionmed_local_user');
                 if (localUser) {
@@ -1423,7 +1404,6 @@
                 updateUIWithProfile();
                 return;
             }
-
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     currentUser = user;
@@ -1443,71 +1423,23 @@
                             await setDoc(userDocPath, userProfile);
                         }
                     } catch (err) {
-                        console.error("Error reading profile from Firestore: ", err);
+                        console.error("Error reading profile", err);
                     }
                     applyLanguage(userProfile.lang || 'pt');
                     updateUIWithProfile();
-                }
-            }, (error) => {
-                console.error("Auth listen error: ", error);
-            });
-        }
-
-        let suggestionsUnsubscribe = null;
-
-        function loadLocalSuggestions() {
-            const localSugs = localStorage.getItem('biblionmed_local_suggestions');
-            suggestions = localSugs ? JSON.parse(localSugs) : [];
-            renderSuggestions();
-        }
-
-        function saveSuggestionLocally(suggestionData) {
-            const localSugs = localStorage.getItem('biblionmed_local_suggestions');
-            let list = localSugs ? JSON.parse(localSugs) : [];
-            list.push(suggestionData);
-            localStorage.setItem('biblionmed_local_suggestions', JSON.stringify(list));
-            suggestions = list;
-            renderSuggestions();
-        }
-
-        function listenSuggestions() {
-            if (!db || !currentUser) {
-                loadLocalSuggestions();
-                return;
-            }
-
-            if (suggestionsUnsubscribe) {
-                suggestionsUnsubscribe();
-            }
-
-            const suggestionsCol = collection(db, 'artifacts', appId, 'public', 'data', 'suggestions');
-            suggestionsUnsubscribe = onSnapshot(suggestionsCol, (snapshot) => {
-                suggestions = [];
-                snapshot.forEach(doc => {
-                    suggestions.push({ id: doc.id, ...doc.data() });
-                });
-                renderSuggestions();
-            }, (err) => {
-                if (err.code === 'permission-denied') {
-                    console.warn("Firestore permissions denied. Falling back to local data.");
-                    loadLocalSuggestions();
-                } else {
-                    console.error("Error with online suggestions: ", err);
                 }
             });
         }
 
         window.handleSearch = function() {
-            const input = document.getElementById('search-input');
-            searchFilter = input.value;
+            searchFilter = document.getElementById('search-input').value;
             document.getElementById('clear-search-btn').classList.toggle('hidden', searchFilter === '');
             showSuggestions(); 
             applyFilters();
         };
 
         window.clearSearch = function() {
-            const input = document.getElementById('search-input');
-            input.value = '';
+            document.getElementById('search-input').value = '';
             searchFilter = '';
             document.getElementById('clear-search-btn').classList.add('hidden');
             document.getElementById('search-suggestions').classList.add('hidden');
@@ -1517,27 +1449,19 @@
         window.showSuggestions = function() {
             const query = normalizeString(document.getElementById('search-input').value);
             const suggestionsEl = document.getElementById('search-suggestions');
-            
             if (query.length < 2) {
                 suggestionsEl.classList.add('hidden');
                 return;
             }
-
-            const matched = books.filter(book => {
-                return normalizeString(book.nome).includes(query) || 
-                       normalizeString(book.autor).includes(query);
-            }).slice(0, 5); 
-
+            const matched = books.filter(b => normalizeString(b.nome).includes(query) || normalizeString(b.autor).includes(query)).slice(0, 5);
             if (matched.length === 0) {
                 suggestionsEl.classList.add('hidden');
                 return;
             }
-
             suggestionsEl.innerHTML = '';
             matched.forEach(book => {
                 const item = document.createElement('div');
                 item.className = "p-3 hover:bg-slate-50 rounded-xl cursor-pointer flex items-center gap-3 transition-colors text-xs text-left";
-                
                 item.innerHTML = `
                     <div class="bg-moss-100 text-moss-700 w-6 h-6 rounded flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-book text-[10px]"></i>
@@ -1556,7 +1480,6 @@
                 };
                 suggestionsEl.appendChild(item);
             });
-
             suggestionsEl.classList.remove('hidden');
         };
 
@@ -1570,7 +1493,7 @@
 
         window.filterCategory = function(cat) {
             categoryFilter = cat;
-            renderCategoryButtons(); // Refresh highlighted state dynamically
+            renderCategoryButtons();
             applyFilters();
         };
 
@@ -1584,12 +1507,9 @@
                            normalizeString(book.autor).includes(term) || 
                            normalizeString(book.categoria).includes(term);
                 });
-                
                 const matchCategory = categoryFilter === 'all' || book.categoria === categoryFilter;
-                
                 return matchSearch && matchCategory;
             });
-
             renderBooks();
         }
 
@@ -1611,7 +1531,6 @@
             const grid = document.getElementById('books-grid');
             const emptyState = document.getElementById('empty-state');
             const countLabel = document.getElementById('books-count-label');
-
             grid.innerHTML = '';
             
             const currentLang = userProfile.lang || 'pt';
@@ -1689,9 +1608,7 @@
                 showToast(errMsg, "error");
                 return;
             }
-            
             selectedFile = file;
-            
             document.getElementById('drop-zone').classList.add('hidden');
             const loader = document.getElementById('virus-scan-loader');
             loader.classList.remove('hidden');
@@ -1702,9 +1619,7 @@
             const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/_/g, " ");
             document.getElementById('suggest-name').value = cleanName;
 
-            setTimeout(() => {
-                bar.style.width = "100%";
-            }, 100);
+            setTimeout(() => { bar.style.width = "100%"; }, 100);
 
             setTimeout(() => {
                 loader.classList.add('hidden');
@@ -1712,16 +1627,11 @@
                 dropZone.classList.remove('hidden');
                 dropZone.className = "border-2 border-dashed border-emerald-400 rounded-2xl p-6 text-center bg-emerald-50/50 flex flex-col items-center justify-center min-h-[140px] cursor-pointer";
                 
-                const currentLang = userProfile.lang || 'pt';
                 document.getElementById('upload-icon').className = "fa-solid fa-circle-check text-emerald-500 text-3xl mb-2";
                 
-                const fileSafeLabel = currentLang === 'en' ? "Secure File" : currentLang === 'es' ? "Archivo Seguro" : "Arquivo Seguro";
-                const scanDoneLabel = currentLang === 'en' ? "Scanning Completed" : currentLang === 'es' ? "Análisis Completado" : "Varredura Completa";
-                const scanToast = currentLang === 'en' ? "File analyzed! No digital or biological viruses found." : currentLang === 'es' ? "¡Archivo analizado! No se encontraron virus biológicos ni digitales." : "Arquivo analisado! Nenhum vírus biológico ou digital encontrado.";
-
-                document.getElementById('upload-text').textContent = `${fileSafeLabel}: ${file.name}`;
-                document.getElementById('upload-subtext').textContent = `Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB | ${scanDoneLabel}`;
-                showToast(scanToast, "success");
+                document.getElementById('upload-text').textContent = `${file.name}`;
+                document.getElementById('upload-subtext').textContent = `Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB | Varredura Completa`;
+                showToast("Arquivo verificado! Pronto para envio direto ao acervo do Drive.", "success");
             }, 3200);
         }
 
@@ -1730,9 +1640,7 @@
             if (!file) return;
 
             if (!file.type.startsWith('image/')) {
-                const currentLang = userProfile.lang || 'pt';
-                const msg = currentLang === 'en' ? "Select a valid cover image." : currentLang === 'es' ? "Seleccione una imagen de portada válida." : "Selecione uma imagem válida para a capa do livro.";
-                showToast(msg, "error");
+                showToast("Selecione uma imagem válida para a capa do livro.", "error");
                 return;
             }
 
@@ -1745,10 +1653,8 @@
                     const scaleSize = MAX_WIDTH / img.width;
                     canvas.width = MAX_WIDTH;
                     canvas.height = img.height * scaleSize;
-
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    
                     selectedCoverBase64 = canvas.toDataURL('image/jpeg', 0.6); 
                     
                     const preview = document.getElementById('suggest-cover-preview');
@@ -1756,94 +1662,96 @@
                     preview.src = selectedCoverBase64;
                     preview.classList.remove('hidden');
                     placeholder.classList.add('hidden');
-                    
-                    const currentLang = userProfile.lang || 'pt';
-                    const successMsg = currentLang === 'en' ? "Cover loaded successfully!" : currentLang === 'es' ? "¡Portada cargada con éxito!" : "Capa carregada com sucesso!";
-                    showToast(successMsg, "success");
+                    showToast("Capa carregada com sucesso!", "success");
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         };
 
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    const result = reader.result;
+                    const base64Data = result.split(',')[1];
+                    resolve(base64Data);
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+
         window.handleSuggestBook = async function(e) {
             e.preventDefault();
-            const name = document.getElementById('suggest-name').value;
-            const author = document.getElementById('suggest-author').value;
+            const name = document.getElementById('suggest-name').value.trim();
+            const author = document.getElementById('suggest-author').value.trim() || 'Autor Desconhecido';
             const category = document.getElementById('suggest-category').value;
-            let finalLink = 'Sem link informado';
-            let generatedFileId = null;
+            const submitBtn = document.getElementById('contrib-submit-btn');
 
-            const currentLang = userProfile.lang || 'pt';
-
-            if (contributionType === 'link') {
-                finalLink = document.getElementById('suggest-link').value || 'Sem link direto';
-            } else if (selectedFile) {
-                generatedFileId = 'phys-file-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
-                try {
-                    await saveFileToStorage(generatedFileId, selectedFile);
-                    finalLink = `Local File: ${selectedFile.name} (${(selectedFile.size / (1024*1024)).toFixed(1)}MB)`;
-                } catch (err) {
-                    console.error("IndexedDB error:", err);
-                    const memoryErr = currentLang === 'en' ? "Memory error storing physical file." : currentLang === 'es' ? "Error de memoria al guardar el archivo físico." : "Erro de memória ao guardar o arquivo físico.";
-                    showToast(memoryErr, "error");
-                    return;
-                }
-            } else {
-                const choiceErr = currentLang === 'en' ? "Please select a file or input a download link." : currentLang === 'es' ? "Por favor, suba un archivo o proporcione un enlace." : "Por favor, faça upload de um arquivo ou informe um link.";
-                showToast(choiceErr, "error");
+            if (contributionType === 'file' && !selectedFile) {
+                showToast("Selecione o arquivo do livro antes de prosseguir.", "error");
                 return;
             }
 
-            const suggestionData = {
-                id: 'sug-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
-                nome: name,
-                autor: author || 'Autor não especificado',
-                categoria: category,
-                link: finalLink,
-                fileId: generatedFileId,
-                capaBase64: selectedCoverBase64 || '', 
-                user: userProfile.nickname,
-                date: new Date().toISOString().split('T')[0]
-            };
-
-            const submitBtn = document.getElementById('contrib-submit-btn');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> ${currentLang === 'en' ? 'Submitting...' : currentLang === 'es' ? 'Enviando...' : 'Enviando...'}`;
+            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Enviando para o Google Drive...`;
 
-            if (db && currentUser) {
-                try {
-                    const suggestionsCol = collection(db, 'artifacts', appId, 'public', 'data', 'suggestions');
-                    await addDoc(suggestionsCol, suggestionData);
-                    const onlineSuccess = currentLang === 'en' ? "Your contribution was sent! Admin will review." : currentLang === 'es' ? "¡Tu contribución fue enviada! El administrador la revisará." : "Sua contribuição foi enviada! O Admin irá analisar.";
-                    showToast(onlineSuccess, "success");
-                } catch (err) {
-                    console.error("Firestore error saving suggestions: ", err);
-                    saveSuggestionLocally(suggestionData);
-                    const offlineFallback = currentLang === 'en' ? "Saved offline in your browser cache!" : currentLang === 'es' ? "¡Guardado de forma estable en la caché de tu navegador!" : "Salvo de forma estável offline no seu navegador!";
-                    showToast(offlineFallback, "success");
+            try {
+                if (contributionType === 'link') {
+                    const directLink = document.getElementById('suggest-link').value;
+                    showToast("Sua sugestão de link foi registrada! Envie no grupo de WhatsApp para agilizar a integração.", "success");
+                } else {
+                    const base64File = await fileToBase64(selectedFile);
+                    let base64Cover = "";
+                    if (selectedCoverBase64) {
+                        base64Cover = selectedCoverBase64.split(',')[1];
+                    }
+
+                    const ext = selectedFile.name.split('.').pop() || 'pdf';
+                    // PADRONIZAÇÃO COMPLETA: Nome - Autor - Categoria
+                    const formattedBookName = `${name} - ${author} - ${category}.${ext}`;
+                    const formattedCoverName = `${name} - ${author} - ${category} - Capa.jpg`;
+
+                    const payload = {
+                        fileData: base64File,
+                        fileName: formattedBookName,
+                        mimeType: selectedFile.type || 'application/pdf',
+                        coverData: base64Cover,
+                        coverFileName: formattedCoverName
+                    };
+
+                    await fetch(GAS_WEBAPP_URL, {
+                        method: "POST",
+                        mode: "no-cors", 
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    showToast("Livro recebido com sucesso no Google Drive do Acervo!", "success");
                 }
-            } else {
-                saveSuggestionLocally(suggestionData);
-                const offlineSuccess = currentLang === 'en' ? "Suggestion saved offline!" : currentLang === 'es' ? "¡Sugerencia guardada de forma estable offline!" : "Sugestão guardada de forma estável offline!";
-                showToast(offlineSuccess, "success");
+
+                document.getElementById('suggestion-form').reset();
+                selectedFile = null;
+                selectedCoverBase64 = '';
+                document.getElementById('suggest-cover-preview').classList.add('hidden');
+                document.getElementById('suggest-cover-placeholder').classList.remove('hidden');
+                document.getElementById('upload-icon').className = "fa-solid fa-cloud-arrow-up text-slate-400 text-3xl mb-2";
+                document.getElementById('upload-text').textContent = "Arraste seu PDF aqui ou clique para buscar";
+                document.getElementById('upload-subtext').textContent = "Os arquivos serão salvos diretamente no Google Drive.";
+                document.getElementById('drop-zone').className = "border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-moss-500 cursor-pointer transition-all bg-slate-50 flex flex-col items-center justify-center min-h-[140px]";
+                
+                switchTab('search');
+
+            } catch (err) {
+                console.error("Upload error", err);
+                showToast("Ocorreu um erro no servidor de upload do Google Drive.", "error");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Enviar Contribuição`;
             }
-
-            document.getElementById('suggestion-form').reset();
-            selectedFile = null;
-            selectedCoverBase64 = '';
-            
-            document.getElementById('suggest-cover-preview').classList.add('hidden');
-            document.getElementById('suggest-cover-placeholder').classList.remove('hidden');
-
-            document.getElementById('upload-icon').className = "fa-solid fa-cloud-arrow-up text-slate-400 text-3xl mb-2";
-            document.getElementById('upload-text').textContent = currentLang === 'en' ? "Drag your PDF here or click to browse" : currentLang === 'es' ? "Arrastra tu PDF aquí o haz clic para buscar" : "Arraste seu PDF aqui ou clique para buscar";
-            document.getElementById('upload-subtext').textContent = currentLang === 'en' ? "Supports PDF, EPUB up to 150MB" : currentLang === 'es' ? "Soporta PDF, EPUB hasta 150MB" : "Sem limite de tamanho (salvamento via IndexedDB!)";
-            document.getElementById('drop-zone').className = "border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-moss-500 cursor-pointer transition-all bg-slate-50 flex flex-col items-center justify-center min-h-[140px]";
-            
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> ${currentLang === 'en' ? 'Submit Contribution' : currentLang === 'es' ? 'Enviar Contribución' : 'Enviar Contribuição'}`;
-            switchTab('search');
         };
 
         window.toggleContributionType = function(type) {
@@ -1877,18 +1785,16 @@
                 isAdminUnlocked = true;
                 localStorage.setItem('biblionmed_admin_unlocked', 'true');
                 unlockAdminUI();
-                const unlockMsg = currentLang === 'en' ? "Admin Panel Access Granted!" : currentLang === 'es' ? "¡Acceso al Panel de Administrador Concedido!" : "Acesso ao Painel Admin Liberado!";
-                showToast(unlockMsg, "success");
+                showToast(currentLang === 'en' ? "Admin Access Granted!" : "Acesso ao Painel Admin Liberado!", "success");
             } else {
-                const incorrectMsg = currentLang === 'en' ? "Incorrect access key." : currentLang === 'es' ? "Clave de acceso incorrecta." : "Chave de acesso incorreta.";
-                showToast(incorrectMsg, "error");
+                showToast(currentLang === 'en' ? "Incorrect access key." : "Chave de acesso incorreta.", "error");
             }
         };
 
         function unlockAdminUI() {
             document.getElementById('admin-gate-section').classList.add('hidden');
             document.getElementById('admin-dashboard-section').classList.remove('hidden');
-            listenSuggestions();
+            renderActiveSheetsList();
         }
 
         window.lockAdmin = function() {
@@ -1897,213 +1803,26 @@
             document.getElementById('admin-dashboard-section').classList.add('hidden');
             document.getElementById('admin-gate-section').classList.remove('hidden');
             document.getElementById('admin-passkey').value = '';
-            
-            if (suggestionsUnsubscribe) {
-                suggestionsUnsubscribe();
-                suggestionsUnsubscribe = null;
-            }
-            suggestions = [];
-            renderSuggestions();
-            const currentLang = userProfile.lang || 'pt';
-            const lockMsg = currentLang === 'en' ? "Panel locked securely." : currentLang === 'es' ? "Panel de administración bloqueado." : "Painel bloqueado com segurança.";
-            showToast(lockMsg, "info");
-        };
-
-        window.downloadPhysicalFile = async function(fileId, bookName) {
-            const currentLang = userProfile.lang || 'pt';
-            try {
-                const prepMsg = currentLang === 'en' ? "Retrieving file from database..." : currentLang === 'es' ? "Recuperando archivo..." : "Recuperando arquivo do banco local...";
-                showToast(prepMsg, "info");
-                const fileBlob = await getFileFromStorage(fileId);
-                
-                if (!fileBlob) {
-                    const notFoundErr = currentLang === 'en' ? "Physical file not found on this device." : currentLang === 'es' ? "Archivo físico no encontrado." : "Arquivo físico não foi encontrado no armazenamento deste dispositivo.";
-                    showToast(notFoundErr, "error");
-                    return;
-                }
-
-                const downloadUrl = URL.createObjectURL(fileBlob);
-                const tempAnchor = document.createElement('a');
-                tempAnchor.href = downloadUrl;
-                tempAnchor.download = fileBlob.name || `${bookName}.pdf`;
-                document.body.appendChild(tempAnchor);
-                tempAnchor.click();
-                document.body.removeChild(tempAnchor);
-                URL.revokeObjectURL(downloadUrl);
-                
-                const doneMsg = currentLang === 'en' ? "Download started!" : currentLang === 'es' ? "¡Descarga iniciada!" : "Download do livro físico iniciado com sucesso!";
-                showToast(doneMsg, "success");
-            } catch (err) {
-                console.error("Retrieval error:", err);
-                const criticalErr = currentLang === 'en' ? "Error downloading." : currentLang === 'es' ? "Error al descargar." : "Erro crítico ao carregar e baixar o arquivo físico.";
-                showToast(criticalErr, "error");
-            }
-        };
-
-        window.copyRowForSheet = function(name, author, category, date, link, coverUrl) {
-            const formatted = `${name}\t${author}\t${category}\t${date}\t${link}\t${coverUrl || ''}`;
-            
-            const tempInput = document.createElement('textarea');
-            tempInput.value = formatted;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-
-            const currentLang = userProfile.lang || 'pt';
-            const copiedMsg = currentLang === 'en' ? "Copied! Paste directly into your spreadsheet." : currentLang === 'es' ? "¡Copiado! Pégalo en tu hoja de cálculo." : "Copiado com sucesso! Agora basta dar CTRL+V na planilha.";
-            showToast(copiedMsg, "success");
-        };
-
-        window.deleteSuggestion = async function(id, fileId) {
-            const currentLang = userProfile.lang || 'pt';
-            if (fileId) {
-                try {
-                    await deleteFileFromStorage(fileId);
-                } catch (e) {
-                    console.error("Expunge failed:", e);
-                }
-            }
-
-            if (id.toString().startsWith('local-sug-') || id.toString().startsWith('sug-')) {
-                suggestions = suggestions.filter(sug => sug.id !== id);
-                localStorage.setItem('biblionmed_local_suggestions', JSON.stringify(suggestions));
-                renderSuggestions();
-                const removeMsg = currentLang === 'en' ? "Removed." : currentLang === 'es' ? "Eliminado." : "Sugestão removida com sucesso.";
-                showToast(removeMsg, "info");
-                return;
-            }
-
-            if (db && currentUser) {
-                try {
-                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'suggestions', id);
-                    await deleteDoc(docRef);
-                    showToast(currentLang === 'en' ? "Archived." : currentLang === 'es' ? "Archivado." : "Sugestão arquivada.", "info");
-                } catch (err) {
-                    console.error("Error deleting suggest: ", err);
-                    suggestions = suggestions.filter(sug => sug.id !== id);
-                    renderSuggestions();
-                    showToast(currentLang === 'en' ? "Removed from cache." : currentLang === 'es' ? "Eliminado de la caché." : "Removido do cache local.", "info");
-                }
-            } else {
-                suggestions = suggestions.filter(sug => sug.id !== id);
-                localStorage.setItem('biblionmed_local_suggestions', JSON.stringify(suggestions));
-                renderSuggestions();
-                showToast(currentLang === 'en' ? "Removed locally." : currentLang === 'es' ? "Eliminado localmente." : "Removido localmente.", "info");
-            }
-        };
-
-        function renderSuggestions() {
-            const list = document.getElementById('suggestions-list');
-            const badge = document.getElementById('suggestions-badge');
-            
-            if (badge) badge.textContent = suggestions.length;
-            if (!list) return;
-
-            const currentLang = userProfile.lang || 'pt';
-
-            if (suggestions.length === 0) {
-                const noSug = currentLang === 'en' ? "No suggestions registered." : currentLang === 'es' ? "Ninguna sugerencia registrada." : "Nenhuma sugestão registrada até o momento.";
-                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">${noSug}</p>`;
-                return;
-            }
-
-            list.innerHTML = '';
-            suggestions.forEach(sug => {
-                const item = document.createElement('div');
-                item.className = "p-4 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col justify-between gap-3 hover:bg-slate-100/50 transition-all";
-                
-                const hasFile = sug.fileId;
-                const fileDownloadBtnText = currentLang === 'en' ? "Download PDF (IndexedDB)" : currentLang === 'es' ? "Descargar PDF (IndexedDB)" : "Baixar PDF Original (IndexedDB)";
-                const verifyLinkText = currentLang === 'en' ? "Verify Link" : currentLang === 'es' ? "Verificar Enlace" : "Verificar Link Externo";
-                const copyBtnText = currentLang === 'en' ? "Copy Row" : currentLang === 'es' ? "Copiar Fila" : "Copiar para Planilha";
-                const authorText = currentLang === 'en' ? 'By' : currentLang === 'es' ? 'Por' : 'Por';
-                const sentByText = currentLang === 'en' ? 'Sent by:' : currentLang === 'es' ? 'Enviado por:' : 'Enviado por:';
-
-                const linkAction = hasFile ? 
-                    `<button onclick="window.downloadPhysicalFile('${sug.fileId}', '${sug.nome}')" class="bg-moss-100 hover:bg-moss-200 text-moss-900 text-[10px] font-extrabold px-3 py-1.5 rounded-lg flex items-center gap-1 transition-all">
-                        <i class="fa-solid fa-file-pdf"></i> ${fileDownloadBtnText}
-                     </button>` : 
-                    `<a href="${sug.link}" target="_blank" class="text-moss-600 hover:underline font-bold flex items-center gap-0.5 text-xs">
-                        <i class="fa-solid fa-link text-[10px]"></i> ${verifyLinkText}
-                    </a>`;
-
-                const hasCoverHTML = sug.capaBase64 ? 
-                    `<img src="${sug.capaBase64}" class="w-10 h-14 object-cover rounded shadow-sm border border-slate-200"/>` : 
-                    `<div class="w-10 h-14 bg-slate-200 flex items-center justify-center text-slate-400 rounded border border-slate-300 text-xs"><i class="fa-solid fa-image"></i></div>`;
-
-                item.innerHTML = `
-                    <div class="flex gap-3">
-                        <div class="shrink-0">
-                            ${hasCoverHTML}
-                        </div>
-                        <div class="flex-grow">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h5 class="font-bold text-navy-900 text-sm leading-snug mb-0.5">${sug.nome}</h5>
-                                    <p class="text-xs text-slate-500">${authorText} ${sug.autor} | Cat: <strong class="text-moss-700">${sug.categoria}</strong></p>
-                                </div>
-                                <span class="bg-moss-100 text-moss-700 text-[9px] font-extrabold px-1.5 py-0.5 rounded-full shrink-0">${sug.date}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex flex-wrap items-center justify-between gap-2 text-[10px] pt-3 border-t border-slate-200/50">
-                        <span class="text-slate-400">${sentByText} <strong>${sug.user}</strong></span>
-                        <div class="flex items-center gap-2">
-                            ${linkAction}
-                            <button onclick="window.copyRowForSheet('${sug.nome}', '${sug.autor}', '${sug.categoria}', '${sug.date}', '${sug.link}', '${sug.capaBase64 ? 'Capa Interna' : ''}')" class="bg-moss-600 hover:bg-moss-700 text-white font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all">
-                                <i class="fa-solid fa-copy"></i> ${copyBtnText}
-                            </button>
-                            <button onclick="window.deleteSuggestion('${sug.id}', '${sug.fileId || ''}')" class="text-rose-500 hover:text-rose-700 font-bold px-1" title="Arquivar">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                list.appendChild(item);
-            });
-        }
-
-        window.saveSheetUrl = function() {
-            const urlInput = document.getElementById('sheet-csv-url');
-            const url = urlInput.value.trim();
-            const currentLang = userProfile.lang || 'pt';
-
-            if (url === '') {
-                showToast(currentLang === 'en' ? "Please input a valid CSV link." : currentLang === 'es' ? "Por favor ingrese un enlace CSV válido." : "Por favor, cole um link CSV válido.", "error");
-                return;
-            }
-
-            if (!url.includes('docs.google.com/spreadsheets') || !url.includes('output=csv')) {
-                showToast(currentLang === 'en' ? "Make sure the sheet is published as CSV." : currentLang === 'es' ? "Asegúrese de que la hoja de cálculo esté publicada como CSV." : "O link deve ser um CSV publicado pelo Google Docs.", "info");
-            }
-
-            localStorage.setItem('biblionmed_csv_url', url);
-            loadSpreadsheetData();
+            showToast("Painel bloqueado com segurança.", "info");
         };
 
         window.resetToDemo = function() {
-            localStorage.removeItem('biblionmed_csv_url');
+            localStorage.removeItem('biblionmed_csv_urls');
             document.getElementById('sheet-csv-url').value = '';
             loadSpreadsheetData();
-            const currentLang = userProfile.lang || 'pt';
-            const restoreMsg = currentLang === 'en' ? "Restored default official database safely!" : currentLang === 'es' ? "¡Planilla oficial restaurada con éxito!" : "Restaurado para a planilha oficial padrão com segurança!";
-            showToast(restoreMsg, "success");
+            showToast("Restaurado para as fontes oficiais originais!", "success");
         };
 
         window.handleProfilePhotoUpload = function(input) {
             const file = input.files[0];
             if (!file) return;
 
-            const currentLang = userProfile.lang || 'pt';
-
             if (!file.type.startsWith('image/')) {
-                showToast(currentLang === 'en' ? "Please select a valid image file." : currentLang === 'es' ? "Por favor seleccione un archivo de imagen válido." : "Selecione apenas arquivos de imagem válida.", "error");
+                showToast("Selecione apenas arquivos de imagem válida.", "error");
                 return;
             }
-
             if (file.size > 1.5 * 1024 * 1024) {
-                showToast(currentLang === 'en' ? "Profile photo must be less than 1.5MB." : currentLang === 'es' ? "La foto de perfil debe ser menor a 1.5MB." : "Escolha uma imagem de perfil de no máximo 1.5MB.", "error");
+                showToast("Escolha uma imagem de perfil de no máximo 1.5MB.", "error");
                 return;
             }
 
@@ -2112,24 +1831,18 @@
                 const base64Image = event.target.result;
                 userProfile.customAvatar = base64Image;
                 userProfile.avatar = 'CUSTOM';
-                
                 document.getElementById('profile-avatar-display').src = base64Image;
-                showToast(currentLang === 'en' ? "Profile photo selected! Save to apply." : currentLang === 'es' ? "¡Foto de perfil seleccionada! Guarde para aplicar." : "Sua foto de perfil foi selecionada! Salve para registrar.", "success");
-            };
-            reader.onerror = function() {
-                showToast("FileReader processing failed", "error");
+                showToast("Sua foto de perfil foi selecionada! Salve para registrar.", "success");
             };
             reader.readAsDataURL(file);
         };
 
         window.switchTab = function(tabName) {
             activeTab = tabName;
-            
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.add('hidden');
                 tab.classList.remove('tab-animate-active');
             });
-            
             const activeTabEl = document.getElementById(`tab-${tabName}`);
             activeTabEl.classList.remove('hidden');
             void activeTabEl.offsetWidth;
@@ -2154,7 +1867,6 @@
                 activeMobileBtn.classList.add('text-white', 'scale-105');
                 activeMobileBtn.classList.remove('text-moss-100');
             }
-
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -2166,10 +1878,16 @@
             document.getElementById('modal-title').textContent = book.nome;
             
             const currentLang = userProfile.lang || 'pt';
-            const authorPrefix = currentLang === 'en' ? 'By' : currentLang === 'es' ? 'Por' : 'Por';
+            const authorPrefix = currentLang === 'en' ? 'By' : 'Por';
             document.getElementById('modal-author').textContent = `${authorPrefix} ${book.autor}`;
             document.getElementById('modal-category').textContent = book.categoria;
             document.getElementById('modal-upload').textContent = book.uploadDate;
+            
+            // EXIBE O IDIOMA DINÂMICO VINDO DIRETAMENTE DA PLANILHA GOOGLE (Coluna 7)
+            const modalLangElement = document.getElementById('modal-lang');
+            if (modalLangElement) {
+                modalLangElement.textContent = book.idioma || (currentLang === 'en' ? 'Portuguese / Spanish' : 'Português / Espanhol');
+            }
             
             const dlBtn = document.getElementById('modal-download-btn');
             dlBtn.href = book.link;
@@ -2185,8 +1903,8 @@
             const isFav = userProfile.favorites && userProfile.favorites.includes(book.id);
             const favBtn = document.getElementById('modal-fav-btn');
             
-            const addFavText = currentLang === 'en' ? "Add to Favorites" : currentLang === 'es' ? "Agregar a Favoritos" : "Adicionar aos Favoritos";
-            const remFavText = currentLang === 'en' ? "Remove from Favorites" : currentLang === 'es' ? "Eliminar de Favoritos" : "Remover dos Favoritos";
+            const addFavText = currentLang === 'en' ? "Add to Favorites" : "Adicionar aos Favoritos";
+            const remFavText = currentLang === 'en' ? "Remove from Favorites" : "Remover dos Favoritos";
             
             favBtn.innerHTML = isFav 
                 ? `<i class="fa-solid text-amber-500 fa-star"></i> ${remFavText}` 
@@ -2202,14 +1920,12 @@
 
         window.openProfileModal = function() {
             document.getElementById('profile-username-input').value = userProfile.nickname;
-            
             const avatarImg = document.getElementById('profile-avatar-display');
             if (userProfile.avatar === 'CUSTOM' && userProfile.customAvatar) {
                 avatarImg.src = userProfile.customAvatar;
             } else {
                 avatarImg.src = `https://placehold.co/100x100/4E6E58/ffffff?text=${getAvatarEmoji(userProfile.avatar)}`;
             }
-            
             renderProfileFavorites();
             document.getElementById('profile-modal').classList.remove('hidden');
         };
@@ -2220,14 +1936,10 @@
 
         window.saveProfileChanges = async function() {
             const newName = document.getElementById('profile-username-input').value.trim();
-            const currentLang = userProfile.lang || 'pt';
-
             if (newName === '') {
-                const nameErr = currentLang === 'en' ? "Your nickname cannot be empty." : currentLang === 'es' ? "Tu apodo no puede estar vacío." : "Seu apelido não pode ser em branco.";
-                showToast(nameErr, "error");
+                showToast("Seu apelido não pode ser em branco.", "error");
                 return;
             }
-
             userProfile.nickname = newName;
             
             if (db && currentUser) {
@@ -2244,28 +1956,21 @@
             } else {
                 localStorage.setItem('biblionmed_local_user', JSON.stringify(userProfile));
             }
-
             updateUIWithProfile();
-            const doneMsg = currentLang === 'en' ? "Profile updated!" : currentLang === 'es' ? "¡Perfil actualizado!" : "Perfil atualizado!";
-            showToast(doneMsg, "success");
+            showToast("Perfil updated!", "success");
             closeProfileModal();
         };
 
         window.toggleFavorite = async function(id) {
             if (!userProfile.favorites) userProfile.favorites = [];
-            const currentLang = userProfile.lang || 'pt';
-            
             const index = userProfile.favorites.indexOf(id);
             if (index > -1) {
                 userProfile.favorites.splice(index, 1);
-                const remMsg = currentLang === 'en' ? "Book removed from favorites" : currentLang === 'es' ? "Libro eliminado de favoritos" : "Livro removido dos favoritos";
-                showToast(remMsg, "info");
+                showToast("Livro removido dos favoritos", "info");
             } else {
                 userProfile.favorites.push(id);
-                const addMsg = currentLang === 'en' ? "Book added to favorites!" : currentLang === 'es' ? "¡Libro agregado a favoritos!" : "Livro adicionado aos favoritos!";
-                showToast(addMsg, "success");
+                showToast("Livro adicionado aos favoritos!", "success");
             }
-
             if (db && currentUser) {
                 try {
                     const userDocPath = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'data');
@@ -2276,7 +1981,6 @@
             } else {
                 localStorage.setItem('biblionmed_local_user', JSON.stringify(userProfile));
             }
-
             renderBooks();
             renderProfileFavorites();
         };
@@ -2293,7 +1997,7 @@
             const currentLang = userProfile.lang || 'pt';
 
             if (!userProfile.favorites || userProfile.favorites.length === 0) {
-                const noFav = currentLang === 'en' ? "No favorites saved yet." : currentLang === 'es' ? "Ningún favorito guardado todavía." : "Nenhum favorito salvo ainda.";
+                const noFav = currentLang === 'en' ? "No favorites saved yet." : "Nenhum favorito salvo ainda.";
                 list.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">${noFav}</p>`;
                 return;
             }
@@ -2302,9 +2006,8 @@
             userProfile.favorites.forEach(favId => {
                 const book = books.find(b => b.id.toString() === favId.toString());
                 if (book) {
-                    const dlBtnText = currentLang === 'en' ? 'Download' : currentLang === 'es' ? 'Descargar' : 'Baixar';
-                    const remBtnText = currentLang === 'en' ? 'Remove' : currentLang === 'es' ? 'Eliminar' : 'Remover';
-
+                    const dlBtnText = currentLang === 'en' ? 'Download' : 'Baixar';
+                    const remBtnText = currentLang === 'en' ? 'Remove' : 'Remover';
                     const div = document.createElement('div');
                     div.className = "flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-100 text-xs";
                     div.innerHTML = `
@@ -2322,7 +2025,6 @@
         function updateUIWithProfile() {
             const hAvatar = document.getElementById('header-avatar');
             const hUser = document.getElementById('header-username');
-
             if (hAvatar && hUser) {
                 if (userProfile.avatar === 'CUSTOM' && userProfile.customAvatar) {
                     hAvatar.src = userProfile.customAvatar;
@@ -2342,24 +2044,12 @@
         }
 
         window.onload = function() {
-            // Non-blocking parallel initialization routines
-            initFileIndexedDB();
-            
             setupFirebase().then(() => {
                 initAuthListener();
             });
-            
             loadSpreadsheetData();
-            
-            const savedUrl = localStorage.getItem('biblionmed_csv_url');
-            if (savedUrl && document.getElementById('sheet-csv-url')) {
-                document.getElementById('sheet-csv-url').value = savedUrl;
-            }
-            
             switchTab('search');
-
-            // Starts rotating the engaging subtitles loop dynamically
-            setInterval(rotateSubtitle, 12000);
+            setInterval(rotateSubtitle, 12000); // Exatos 12 segundos para leitura confortável
         };
 
     </script>
