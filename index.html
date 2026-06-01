@@ -182,7 +182,7 @@
             </div>
 
             <!-- Stats Bar / Source Info -->
-            <div class="w-full max-w-5xl flex items-center justify-between px-2 mb-4 text-xs text-slate-400 font-medium">
+            <div class="w-full max-w-5xl flex flex-row items-center justify-between px-4 sm:px-2 mb-4 text-[11px] sm:text-xs text-slate-400 font-medium">
                 <span id="books-count-label" data-i18n="loadingAcervo">Carregando acervo...</span>
                 <span id="data-source-label" class="flex items-center gap-1 text-moss-600">
                     <i class="fa-solid fa-circle-notch animate-spin"></i> <span data-i18n="syncingSheet">Sincronizando Planilha...</span>
@@ -715,7 +715,7 @@
                 contribLink: "Enviar Link Direto",
                 contribDropLabel: "Selecionar Livro do Computador/Celular",
                 contribDropText: "Arraste seu PDF aqui ou clique para buscar",
-                contribDropSubtext: "O arquivo será salvo diretamente no Google Drive do acervo.",
+                contribDropSubtext: "O arquivo será salvo diretamente no nosso Drive integrado.",
                 scanTitle: "Realizando Varredura Biológica e Digital...",
                 scanDesc: "Inspecionando assinaturas de código para proteção contra trojans e adwares.",
                 contribLinkLabel: "Link de Download Oficial *",
@@ -727,7 +727,7 @@
                 contribBookPlaceholder: "Ex: Anatomia Orientada para a Clínica - Moore",
                 contribAuthorLabel: "Autor / Edição",
                 contribAuthorPlaceholder: "Ex: Keith L. Moore - 8ª Ed.",
-                contribCatLabel: "Categoria do Livro",
+                contribCatLabel: "Book Category",
                 contribSubmit: "Enviar Contribuição",
                 adminTitle: "Acesso do Administrador",
                 adminSub: "Esta área é restrita para o criador do projeto gerenciar o banco de dados e as planilhas do acervo.",
@@ -1008,7 +1008,7 @@
             ]
         };
 
-        const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbz7ZBLMrEG8Fgq1dWWGdVhrnSiUoKI2RC1qjDYGcPcXUy2WPNfokn6b5gMVPBnYlfb/exec";
+        const GAS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwz7ZBLMrEG8Fgq1dWWGdVhrnSiUoKI2RC1qjDYGcPcXUy2WPNfokn6b5gMVPBnYlfb/exec";
 
         function normalizeString(str) {
             if (!str) return '';
@@ -1230,41 +1230,53 @@
                     renderCategoryButtons();
                     if (sourceLabel) {
                         const currentLang = userProfile.lang || 'pt';
-                        sourceLabel.innerHTML = `<i class="fa-solid fa-bolt text-amber-500"></i> ${currentLang === 'en' ? 'Loaded from cache' : currentLang === 'es' ? 'Cargado de cache' : 'Carregado do cache instantâneo'}`;
+                        const hasCustom = activeUrls.some(url => url !== DEFAULT_SHEET_URL);
+                        if (statusBadge) {
+                            if (hasCustom) {
+                                statusBadge.textContent = currentLang === 'en' ? "Custom Sheet Connected" : currentLang === 'es' ? "Planilla Personalizada Conectada" : "Planilla Customizada Conectada";
+                                statusBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700";
+                            } else {
+                                statusBadge.textContent = currentLang === 'en' ? "Official Sheet Active" : currentLang === 'es' ? "Planilla Oficial Activa" : "Planilla Oficial Ativa";
+                                statusBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700";
+                            }
+                        }
+                        sourceLabel.innerHTML = hasCustom 
+                            ? `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Synced: Custom Base' : currentLang === 'es' ? 'Sincronizado: Base Personalizada' : 'Sincronizado: Base Customizada'}`
+                            : `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Sincronizado: Base Oficial' : currentLang === 'es' ? 'Sincronizado: Base Oficial' : 'Sincronizado: Base Oficial'}`;
                     }
-                } catch (e) {
-                    console.error("Cache parse error", e);
+                } catch (err) {
+                    console.warn("Could not load book cache securely:", err);
                 }
             }
 
+            // Fetching and merging multiple spreadsheets live
             let loadedBooks = [];
             let successfulFetches = 0;
 
-            for (let index = 0; index < activeUrls.length; index++) {
-                const targetUrl = activeUrls[index];
+            for (const targetUrl of activeUrls) {
                 try {
                     const response = await fetch(targetUrl);
-                    if (!response.ok) throw new Error("Fetch error");
+                    if (!response.ok) throw new Error("Network error reading the spreadsheet");
                     const text = await response.text();
                     const rows = parseCSV(text);
 
                     if (rows.length > 1) {
-                        successfulFetches++;
                         for (let i = 1; i < rows.length; i++) {
                             const r = rows[i];
                             if (r.length >= 3 && r[0].trim() !== '') {
                                 loadedBooks.push({
-                                    id: `sheet-${index}-${i}`,
+                                    id: `sheet-${loadedBooks.length + 1}`,
                                     nome: r[0] || 'Sem Título',
                                     autor: r[1] || 'Autor Desconhecido',
                                     categoria: r[2] || 'Outros',
                                     uploadDate: r[3] || 'Desconhecida',
                                     link: r[4] || '#',
                                     capa: r[5] || '',
-                                    idioma: r[6] || '' // Coluna 7 (Idioma do Livro)
+                                    idioma: r[6] || ''
                                 });
                             }
                         }
+                        successfulFetches++;
                     }
                 } catch (err) {
                     console.warn(`Could not sync spreadsheet source: ${targetUrl}`, err);
@@ -1290,13 +1302,12 @@
                     statusBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700";
                 }
                 
-                // OCULTA QUALQUER CONTAGEM NO FORMULÁRIO DE BUSCA PÚBLICO
                 if (sourceLabel) {
                     const hasCustom = activeUrls.some(url => url !== DEFAULT_SHEET_URL);
                     if (hasCustom) {
                         sourceLabel.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Custom Database Integrated' : currentLang === 'es' ? 'Base Personalizada Integrada' : 'Base Customizada Integrada'}`;
                     } else {
-                        sourceLabel.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Official Base Synced' : currentLang === 'es' ? 'Base Oficial Sincronizada' : 'Base Oficial Sincronizada'}`;
+                        sourceLabel.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Sincronizado: Base Oficial' : currentLang === 'es' ? 'Sincronizado: Base Oficial' : 'Sincronizado: Base Oficial'}`;
                     }
                 }
             } else if (!cachedData) {
@@ -1556,9 +1567,10 @@
                 const card = document.createElement('div');
                 card.className = "bg-white rounded-2xl p-4 shadow-lg shadow-slate-100 border border-slate-100/60 hover:shadow-xl hover:border-moss-100 transition-all flex gap-3 group min-h-[136px] min-w-0 relative overflow-hidden";
                 
+                const cbCapa = book.capa ? book.capa.trim() : '';
                 const escapedNome = book.nome.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-                const coverHTML = book.capa ? 
-                    `<img src="${book.capa}" alt="Capa" data-title="${escapedNome}" data-category="${book.categoria}" class="w-full h-full object-cover rounded-lg shadow-md shrink-0 border border-slate-100" onerror="window.handleImageError(this)"/>` : 
+                const coverHTML = cbCapa ? 
+                    `<img src="${cbCapa}" alt="Capa" data-title="${escapedNome}" data-category="${book.categoria}" class="w-full h-full object-cover rounded-lg shadow-md shrink-0 border border-slate-100" onerror="window.handleImageError(this)"/>` : 
                     window.createGenericBookCoverHTML(book.nome, book.categoria, true);
 
                 const accessText = currentLang === 'en' ? 'Access' : currentLang === 'es' ? 'Acceder' : 'Acessar';
@@ -1709,7 +1721,6 @@
                     }
 
                     const ext = selectedFile.name.split('.').pop() || 'pdf';
-                    // PADRONIZAÇÃO COMPLETA: Nome - Autor - Categoria
                     const formattedBookName = `${name} - ${author} - ${category}.${ext}`;
                     const formattedCoverName = `${name} - ${author} - ${category} - Capa.jpg`;
 
@@ -1883,7 +1894,6 @@
             document.getElementById('modal-category').textContent = book.categoria;
             document.getElementById('modal-upload').textContent = book.uploadDate;
             
-            // EXIBE O IDIOMA DINÂMICO VINDO DIRETAMENTE DA PLANILHA GOOGLE (Coluna 7)
             const modalLangElement = document.getElementById('modal-lang');
             if (modalLangElement) {
                 modalLangElement.textContent = book.idioma || (currentLang === 'en' ? 'Portuguese / Spanish' : 'Português / Espanhol');
@@ -1957,7 +1967,7 @@
                 localStorage.setItem('biblionmed_local_user', JSON.stringify(userProfile));
             }
             updateUIWithProfile();
-            showToast("Perfil updated!", "success");
+            showToast("Perfil atualizado!", "success");
             closeProfileModal();
         };
 
