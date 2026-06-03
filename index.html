@@ -112,7 +112,7 @@
                 </button>
             </nav>
 
-            <!-- User Auth Profile Widget -->
+            <!-- User Profile Widget -->
             <div class="flex items-center gap-3">
                 <div id="user-profile-widget" class="flex items-center gap-2 bg-navy-800/80 px-3 py-1.5 rounded-full cursor-pointer hover:bg-navy-800 transition-all border border-navy-100/10" onclick="openProfileModal()">
                     <img id="header-avatar" src="https://placehold.co/100x100/4E6E58/ffffff?text=📚" alt="Avatar" class="w-7 h-7 rounded-full border border-moss-500 object-cover bg-slate-100">
@@ -122,6 +122,7 @@
         </div>
     </header>
 
+    <!-- Mobile Navigation Bar -->
     <div class="md:hidden bg-navy-900 border-t border-navy-800 text-white flex justify-around py-3 text-xs sticky bottom-0 z-40 shadow-2xl">
         <button onclick="switchTab('search')" id="mobile-nav-search" class="flex flex-col items-center gap-1 text-white scale-105 transition-all">
             <i class="fa-solid fa-magnifying-glass text-lg"></i>
@@ -151,12 +152,12 @@
                     Bibli<span class="text-moss-600">.on.</span>med
                 </h1>
                 <!-- Dynamic rotating message subtitle container -->
-                <p id="dynamic-subtitle" class="text-slate-500 text-sm sm:text-base font-medium transition-all duration-500 opacity-100" data-i18n="mainSubtitle">
+                <p id="dynamic-subtitle" class="text-slate-500 text-xs sm:text-sm font-medium transition-all duration-500 opacity-100" data-i18n="mainSubtitle">
                     A maior biblioteca de medicina gratuita, revisada e livre de vírus para estudantes da América Latina.
                 </p>
             </div>
 
-            <!-- Central Google-like Search Bar with Auto-complete Dropdown -->
+            <!-- Central Search Bar with Auto-complete Dropdown -->
             <div class="w-full max-w-2xl relative mb-8">
                 <div class="bg-white rounded-2xl shadow-xl shadow-slate-100 p-2 border border-slate-100 transition-all focus-within:ring-2 focus-within:ring-moss-500 focus-within:border-transparent">
                     <div class="flex items-center">
@@ -176,16 +177,65 @@
                 </div>
             </div>
 
-            <!-- DYNAMIC CATEGORIES CONTAINER -->
-            <div id="categories-container" class="flex flex-wrap justify-center gap-2 mb-10 max-w-4xl px-2">
-                <!-- Populated dynamically from Google Sheet Data or Offline Cache -->
+            <!-- DYNAMIC GROUPS (MATÉRIAS) & ADVANCED FILTER DROPDOWN CONTAINER -->
+            <div class="w-full max-w-5xl flex flex-col md:flex-row items-center justify-between gap-4 mb-10 px-2">
+                <!-- Groups (Matérias) -->
+                <div id="categories-container" class="flex flex-wrap justify-center md:justify-start gap-2 max-w-4xl">
+                    <!-- Populated dynamically from Google Sheet Data -->
+                </div>
+
+                <!-- Advanced Filter Toggle Button & Dropdown -->
+                <div class="relative shrink-0 w-full sm:w-auto flex justify-center sm:block">
+                    <button onclick="toggleFilterDropdown(event)" class="bg-white hover:bg-slate-50 text-slate-700 font-bold px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-center gap-2 text-xs sm:text-sm transition-all w-full sm:w-auto min-w-[160px]">
+                        <i class="fa-solid fa-sliders text-moss-600"></i>
+                        <span data-i18n="filterBtn">Filtrar & Ordenar</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-1"></i>
+                    </button>
+
+                    <!-- FLOATING FILTER & SORT PANEL -->
+                    <div id="filter-dropdown-panel" class="hidden absolute left-1/2 -translate-x-1/2 sm:left-auto sm:right-0 sm:translate-x-0 mt-2 bg-white rounded-2xl border border-slate-100 shadow-2xl w-72 z-50 p-4 animate-[fadeIn_0.15s_ease-out] text-left">
+                        <!-- Sort Section -->
+                        <div class="mb-4">
+                            <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                <i class="fa-solid fa-arrow-down-a-z text-moss-600"></i> <span data-i18n="sortTitle">Ordenar Acervo por:</span>
+                            </h4>
+                            <div class="space-y-1.5">
+                                <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer hover:text-navy-900 transition-colors">
+                                    <input type="radio" name="book-sort" value="newest" checked onchange="handleSortChange(this.value)" class="text-moss-600 focus:ring-moss-500 h-3.5 w-3.5 border-slate-300">
+                                    <span data-i18n="sortNewest">Mais Recentes (Upload)</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer hover:text-navy-900 transition-colors">
+                                    <input type="radio" name="book-sort" value="az" onchange="handleSortChange(this.value)" class="text-moss-600 focus:ring-moss-500 h-3.5 w-3.5 border-slate-300">
+                                    <span data-i18n="sortAZ">Ordem Alfabética (A-Z)</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer hover:text-navy-900 transition-colors">
+                                    <input type="radio" name="book-sort" value="za" onchange="handleSortChange(this.value)" class="text-moss-600 focus:ring-moss-500 h-3.5 w-3.5 border-slate-300">
+                                    <span data-i18n="sortZA">Ordem Inversa (Z-A)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Subgroup Checkboxes Section -->
+                        <div class="border-t border-slate-100 pt-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fa-solid fa-filter text-moss-600"></i> <span data-i18n="filterTypesTitle">Tipos de Arquivo:</span>
+                                </h4>
+                                <button onclick="clearSubgroupFilters()" class="text-[9px] text-moss-600 hover:underline font-bold" data-i18n="filterClearBtn">Limpar</button>
+                            </div>
+                            <div id="filter-subgroups-list" class="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                                <!-- Populated dynamically based on unique subgroups in spreadsheet -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Stats Bar / Source Info -->
-            <div class="w-full max-w-5xl flex flex-row items-center justify-between px-4 sm:px-0 mb-4 text-[10px] sm:text-xs text-slate-400 font-semibold whitespace-nowrap overflow-hidden">
-                <span id="books-count-label" data-i18n="loadingAcervo">Carregando acervo...</span>
-                <span id="data-source-label" class="flex items-center gap-1 text-moss-600 shrink-0">
-                    <i class="fa-solid fa-circle-notch animate-spin"></i> <span data-i18n="syncingSheet">Sincronizando Planilha...</span>
+            <div class="w-full max-w-5xl flex flex-row items-center justify-between px-4 sm:px-2 mb-4 text-[10px] sm:text-xs text-slate-400 font-semibold whitespace-nowrap overflow-hidden">
+                <span id="books-count-label" class="truncate text-[10px] sm:text-xs">Carregando acervo...</span>
+                <span id="data-source-label" class="flex items-center gap-1 text-moss-600 shrink-0 truncate text-[10px] sm:text-xs">
+                    <i class="fa-solid fa-circle-notch animate-spin"></i> <span data-i18n="syncingSheet">Sincronizando...</span>
                 </span>
             </div>
 
@@ -332,7 +382,7 @@
                             <h4 class="text-xs font-bold text-navy-900 mb-1" data-i18n="scanTitle">Realizando Varredura Biológica e Digital...</h4>
                             <p class="text-[10px] text-slate-500" data-i18n="scanDesc">Inspecionando assinaturas de código para proteção contra trojans e adwares.</p>
                             <div class="w-full bg-slate-200 rounded-full h-1.5 mt-3 max-w-xs overflow-hidden">
-                                <div id="scan-bar" class="bg-moss-500 h-1.5 rounded-full w-0 transition-all duration-[3000ms]"></div>
+                                <div id="scan-bar" class="bg-moss-500 h-1.5 rounded-full w-0 transition-all duration-[1500ms]"></div>
                             </div>
                         </div>
                     </div>
@@ -366,13 +416,14 @@
                         <input type="text" id="suggest-name" required data-i18n-placeholder="contribBookPlaceholder" placeholder="Ex: Anatomia Orientada para a Clínica - Moore" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-moss-500 focus:border-transparent text-sm">
                     </div>
 
+                    <div>
+                        <label class="block text-xs font-bold text-navy-800 uppercase tracking-wider mb-1" data-i18n="contribAuthorLabel">Autor / Edição</label>
+                        <input type="text" id="suggest-author" data-i18n-placeholder="contribAuthorPlaceholder" placeholder="Ex: Keith L. Moore - 8ª Ed." class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-moss-500 focus:border-transparent text-sm">
+                    </div>
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-navy-800 uppercase tracking-wider mb-1" data-i18n="contribAuthorLabel">Autor / Edição</label>
-                            <input type="text" id="suggest-author" data-i18n-placeholder="contribAuthorPlaceholder" placeholder="Ex: Keith L. Moore - 8ª Ed." class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-moss-500 focus:border-transparent text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-navy-800 uppercase tracking-wider mb-1" data-i18n="contribCatLabel">Categoria do Livro</label>
+                            <label class="block text-xs font-bold text-navy-800 uppercase tracking-wider mb-1" data-i18n="contribCatLabel">Grupo (Matéria) *</label>
                             <select id="suggest-category" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-moss-500 focus:border-transparent text-sm">
                                 <option value="Anatomia">Anatomia</option>
                                 <option value="Fisiologia">Fisiologia</option>
@@ -385,6 +436,30 @@
                                 <option value="Outros">Outros</option>
                             </select>
                         </div>
+                        <div>
+                            <label class="block text-xs font-bold text-navy-800 uppercase tracking-wider mb-1" data-i18n="contribSubcatLabel">Subgrupo (Tipo) *</label>
+                            <select id="suggest-subgroup" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-moss-500 focus:border-transparent text-sm">
+                                <option value="Livro">Livro</option>
+                                <option value="Slide">Slide</option>
+                                <option value="Resumo">Resumo</option>
+                                <option value="Trabalho Acadêmico">Trabalho Acadêmico</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Real-Time Upload Progress Interface -->
+                    <div id="realtime-upload-progress" class="hidden bg-slate-50 border border-slate-100 rounded-2xl p-4 mt-2">
+                        <div class="flex justify-between items-center mb-1">
+                            <span id="progress-filename" class="text-xs font-bold text-navy-900 truncate max-w-[200px]">Enviando arquivo...</span>
+                            <span id="progress-percent" class="text-xs font-extrabold text-moss-600">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                            <div id="progress-bar-fill" class="bg-moss-500 h-full rounded-full w-0 transition-all duration-100"></div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-1.5 flex items-center gap-1">
+                            <i class="fa-solid fa-cloud-arrow-up animate-pulse"></i> Enviando para a pasta segura no Google Drive...
+                        </p>
                     </div>
 
                     <div class="pt-4">
@@ -442,7 +517,7 @@
                                 <i class="fa-solid fa-circle-question text-moss-600"></i> <span data-i18n="adminHowToTitle">Como agregar suas Planilhas Google?</span>
                             </h4>
                             <ol class="text-xs text-slate-600 space-y-2 list-decimal pl-4">
-                                <li data-i18n="adminHowToStep1">Crie uma planilha no Google Planilhas com as colunas exatamente nesta ordem: Nome do livro, Autor, Categoria, Data de upload, Link, Capa (URL), Idioma.</li>
+                                <li data-i18n="adminHowToStep1">Crie uma planilha no Google Planilhas com as colunas exatamente nesta ordem: Nome do livro, Autor, Grupo, Subgrupo, Data de upload, Link, Capa (URL), Idioma.</li>
                                 <li data-i18n="adminHowToStep2">No Google Planilhas, clique em: Arquivo > Compartilhar > Publicar na Web.</li>
                                 <li data-i18n="adminHowToStep3">Na caixa de diálogo, selecione "Valores separados por vírgulas (.csv)".</li>
                                 <li data-i18n="adminHowToStep4">Clique em Publicar, copie o link gerado e adicione-o na lista abaixo!</li>
@@ -668,7 +743,7 @@
                 navSearch: "Buscar Livros",
                 navAbout: "Sobre o Projeto",
                 navSuggest: "Contribuir",
-                navAdmin: "Planilhas / Configs",
+                navAdmin: "Planilha / Configs",
                 enter: "Entrar",
                 student: "Estudante",
                 mobSearch: "Buscar",
@@ -677,15 +752,6 @@
                 mobConfigs: "Configs",
                 searchPlaceholder: "Pesquise por anatomia, autor, Robbins, Guyton, cirurgia...",
                 catAll: "Todos os Livros",
-                catAnatomia: "Anatomia",
-                catFisiologia: "Fisiologia",
-                catPatologia: "Patologia",
-                catFarmacologia: "Farmacologia",
-                catClinica: "Clínica Médica",
-                catEmbriologia: "Embriología",
-                catBioquimica: "Bioquímica",
-                catHistologia: "Histologia",
-                catOutros: "Outros",
                 loadingAcervo: "Carregando acervo...",
                 syncingSheet: "Sincronizando...",
                 emptyStateTitle: "Nenhum livro encontrado",
@@ -712,7 +778,7 @@
                 contribTitle: "Contribuir com o Acervo Médico",
                 contribSub: "Ajude outros estudantes enviando livros ou links úteis de forma rápida e segura!",
                 contribFile: "Enviar Arquivo (PDF/EPUB)",
-                contribLink: "Enviar Link Direto",
+                contribLink: "Enviar Enlace Direto",
                 contribDropLabel: "Selecionar Livro do Computador/Celular",
                 contribDropText: "Arraste seu PDF aqui ou clique para buscar",
                 contribDropSubtext: "O arquivo será salvo diretamente no nosso Drive integrado.",
@@ -727,7 +793,8 @@
                 contribBookPlaceholder: "Ex: Anatomia Orientada para a Clínica - Moore",
                 contribAuthorLabel: "Autor / Edição",
                 contribAuthorPlaceholder: "Ex: Keith L. Moore - 8ª Ed.",
-                contribCatLabel: "Book Category",
+                contribCatLabel: "Grupo (Matéria) *",
+                contribSubcatLabel: "Subgrupo (Tipo) *",
                 contribSubmit: "Enviar Contribuição",
                 adminTitle: "Acesso do Administrador",
                 adminSub: "Esta área é restrita para o criador do projeto gerenciar o banco de dados e as fontes do acervo.",
@@ -737,14 +804,11 @@
                 adminConfigSub: "Gerencie múltiplos links de planilhas para agregar ao acervo geral",
                 adminLockBtn: "Bloquear Painel",
                 adminHowToTitle: "Como agregar suas Planilhas Google?",
-                adminHowToStep1: "Crie uma planilha no Google Planilhas com as colunas exatamente nesta ordem: Nome do livro, Autor, Categoria, Data de upload, Link, Capa (URL), Idioma.",
-                adminHowToStep2: "In Google Planilhas, clique em: Arquivo > Compartilhar > Publicar na Web.",
+                adminHowToStep1: "Crie uma planilha no Google Planilhas com as colunas exatamente nesta ordem: Nome do livro, Autor, Grupo, Subgrupo, Data de upload, Link, Capa (URL), Idioma.",
+                adminHowToStep2: "No Google Planilhas, clique em: Arquivo > Compartilhar > Publicar na Web.",
                 adminHowToStep3: "Na caixa de diálogo, selecione \"Valores separados por vírgulas (.csv)\".",
                 adminHowToStep4: "Clique em Publicar, copie o link gerado e adicione-o na lista abaixo!",
-                adminDisclaimerTitle: "Isenção de Responsabilidade sobre Bancos Customizados",
-                adminDisclaimerDesc: "A planilha padrão oficial do projeto **Bibli.on.med** é revisada manualmente contra malwares. Ao conectar planilhas externas personalizadas, a plataforma não se responsabiliza pela segurança, confiabilidade dos arquivos binários ou pela integridade dos redirecionamentos inseridos por terceiros.",
                 adminCsvLabel: "Adicionar URL de Planilha (.csv)",
-                adminCsvBtn: "Salvar Link",
                 adminRestoreBtn: "Restaurar Planilha Oficial Padrão",
                 footerBrandSub: "Biblioteca Aberta de Medicina",
                 footerCopy: "© 2026 Bibli.on.med. Desenvolvido para facilitar o acesso à saúde e educação médica na América Latina.",
@@ -753,7 +817,6 @@
                 modalSafeVal: "Seguro e Limpo",
                 modalUploadLabel: "Disponibilizado em:",
                 modalLangLabel: "Idioma principal:",
-                modalLangVal: "Português / Espanhol",
                 modalDownloadBtn: "Baixar Livro com Segurança",
                 modalFavAdd: "Adicionar aos Favoritos",
                 modalFavRemove: "Remover dos Favoritos",
@@ -768,7 +831,14 @@
                 devTitle: "De estudante para estudante",
                 devDesc: "Este projeto é totalmente de código aberto (Open Source) e transparente. Siga o Criador no Instagram ou explore o código-fonte diretamente no repositório oficial do GitHub!",
                 githubBtn: "GitHub do Projeto",
-                instagramBtn: "Instagram do Criador"
+                instagramBtn: "Instagram do Criador",
+                filterBtn: "Filtrar & Ordenar",
+                sortTitle: "Ordenar Acervo por:",
+                sortNewest: "Mais Recentes (Upload)",
+                sortAZ: "Ordem Alfabética (A-Z)",
+                sortZA: "Ordem Inversa (Z-A)",
+                filterTypesTitle: "File Formats:",
+                filterClearBtn: "Limpar"
             },
             es: {
                 navSearch: "Buscar Libros",
@@ -782,16 +852,7 @@
                 mobSuggest: "Contribuir",
                 mobConfigs: "Configs",
                 searchPlaceholder: "Busque por anatomía, autor, Robbins, Guyton, cirugía...",
-                catAll: "Todos los Libros",
-                catAnatomia: "Anatomía",
-                catFisiologia: "Fisiología",
-                catPatologia: "Patología",
-                catFarmacologia: "Farmacología",
-                catClinica: "Clínica Médica",
-                catEmbriologia: "Embriología",
-                catBioquimica: "Bioquímica",
-                catHistologia: "Histología",
-                catOutros: "Otros",
+                catAll: "Todos os Livros",
                 loadingAcervo: "Cargando biblioteca...",
                 syncingSheet: "Sincronizando...",
                 emptyStateTitle: "No se encontraron libros",
@@ -799,7 +860,7 @@
                 aboutTitle: "El Enfoque de Bibli.on.med",
                 aboutSub: "Apoyo Académico Sin Fines de Lucro",
                 aboutP1: "La rutina de un estudiante de medicina en América Latina está llena de desafíos. Además del horario de clases agotador, el costo de los libros técnicos y manuales clínicos de referencia internacional puede ser prohibitivo para la mayoría de los futuros médicos.",
-                aboutP2: "El objetivo de Bibli.on.med es simplificar a busca y democratizar el acceso al conocimiento médico de calidad.",
+                aboutP2: "El objetivo de Bibli.on.med es simplificar la búsqueda y democratizar el acceso al conocimiento médico de calidad.",
                 aboutShieldTitle: "🛡️ Compromiso con la Seguridad Biológica (¡y Digital!)",
                 aboutShieldDesc: "Todos los enlaces de descarga disponibles en la biblioteca están previamente verificados. Garantizamos que los archivos estén libres de virus, scripts maliciosos o anuncios abusivos. ¡Nos enfocamos solo en el PDF limpio!",
                 howItWorks: "¿Cómo funciona la biblioteca?",
@@ -833,7 +894,8 @@
                 contribBookPlaceholder: "Ej: Anatomía Orientada a la Clínica - Moore",
                 contribAuthorLabel: "Autor / Edición",
                 contribAuthorPlaceholder: "Ej: Keith L. Moore - 8ª Ed.",
-                contribCatLabel: "Categoría del Libro",
+                contribCatLabel: "Grupo (Asignatura) *",
+                contribSubcatLabel: "Subgrupo (Tipo) *",
                 contribSubmit: "Enviar Contribución",
                 adminTitle: "Acceso de Administrador",
                 adminSub: "Esta área está restringida para que el creador del proyecto administre la base de datos y las fuentes de la biblioteca.",
@@ -843,14 +905,11 @@
                 adminConfigSub: "Administra múltiples enlaces de planillas para agregar a la biblioteca general",
                 adminLockBtn: "Bloquear Panel",
                 adminHowToTitle: "¿Cómo agregar tus Planillas de Google?",
-                adminHowToStep1: "Crea una planilla en Google Hojas de Cálculo con las columnas exactamente en este orden: Nombre del libro, Autor, Categoría, Data de upload, Link, Capa (URL), Idioma.",
-                adminHowToStep2: "En Google Hojas de Cálculo, haz clic en: Archivo > Compartir > Publicar en la Web.",
+                adminHowToStep1: "Crea una planilla en Google Hojas de Cálculo con las columnas exactamente en este orden: Nombre del libro, Autor, Grupo, Subgrupo, Data de upload, Link, Capa (URL), Idioma.",
+                adminHowToStep2: "En Google Hojas de Cálculo, haz clic en: Arquivo > Compartir > Publicar en la Web.",
                 adminHowToStep3: "En el cuadro de diálogo, selecciona \"Valores separados por comas (.csv)\".",
                 adminHowToStep4: "Haz clic en Publicar, copia el enlace generado y agrégalo a la lista de abajo.",
-                adminDisclaimerTitle: "Exención de Responsabilidad sobre Bases Personalizadas",
-                adminDisclaimerDesc: "La planilla oficial del projeto **Bibli.on.med** se revisa manualmente contra virus. Al conectar planillas externas, la plataforma no se responsabiliza de la seguridad, confiabilidad de los archivos o integridad de las redirecciones.",
                 adminCsvLabel: "Agregar URL de Planilla (.csv)",
-                adminCsvBtn: "Guardar Enlace",
                 adminRestoreBtn: "Restaurar Planilla Oficial",
                 footerBrandSub: "Biblioteca Abierta de Medicina",
                 footerCopy: "© 2026 Bibli.on.med. Desarrollado para facilitar el acceso a la salud y educación médica en América Latina.",
@@ -859,7 +918,6 @@
                 modalSafeVal: "Seguro e Limpio",
                 modalUploadLabel: "Disponible en:",
                 modalLangLabel: "Idioma principal:",
-                modalLangVal: "Português / Español",
                 modalDownloadBtn: "Descargar Libro con Seguridad",
                 modalFavAdd: "Agregar a Favoritos",
                 modalFavRemove: "Eliminar de Favoritos",
@@ -874,7 +932,14 @@
                 devTitle: "De estudiante a estudiante",
                 devDesc: "Este proyecto es completamente de código aberto (Open Source) y transparente. ¡Sigue al Creador en Instagram o explora el código fuente directamente en el repositorio oficial de GitHub!",
                 githubBtn: "GitHub del Proyecto",
-                instagramBtn: "Instagram del Criador"
+                instagramBtn: "Instagram del Criador",
+                filterBtn: "Filtrar & Ordenar",
+                sortTitle: "Ordenar por:",
+                sortNewest: "Más Recientes",
+                sortAZ: "Alfabético (A-Z)",
+                sortZA: "Inverso (Z-A)",
+                filterTypesTitle: "Formatos de Archivo:",
+                filterClearBtn: "Limpar"
             },
             en: {
                 navSearch: "Search Books",
@@ -889,15 +954,6 @@
                 mobConfigs: "Configs",
                 searchPlaceholder: "Search by anatomy, author, Robbins, Guyton, surgery...",
                 catAll: "All Books",
-                catAnatomia: "Anatomy",
-                catFisiologia: "Physiology",
-                catPatologia: "Pathology",
-                catFarmacologia: "Pharmacology",
-                catClinica: "Internal Medicine",
-                catEmbriologia: "Embryology",
-                catBioquimica: "Biochemistry",
-                catHistologia: "Histology",
-                catOutros: "Others",
                 loadingAcervo: "Loading collection...",
                 syncingSheet: "Syncing...",
                 emptyStateTitle: "No books found",
@@ -939,7 +995,8 @@
                 contribBookPlaceholder: "Eg: Clinically Oriented Anatomy - Moore",
                 contribAuthorLabel: "Author / Edition",
                 contribAuthorPlaceholder: "Eg: Keith L. Moore - 8th Ed.",
-                contribCatLabel: "Book Category",
+                contribCatLabel: "Group (Subject) *",
+                contribSubcatLabel: "Subgroup (Type) *",
                 contribSubmit: "Submit Contribution",
                 adminTitle: "Administrator Access",
                 adminSub: "This area is restricted for the project creator to manage the database and sheets.",
@@ -949,14 +1006,11 @@
                 adminConfigSub: "Manage multiple spreadsheet links to aggregate into the main library",
                 adminLockBtn: "Lock Panel",
                 adminHowToTitle: "How to aggregate your Google Sheets?",
-                adminHowToStep1: "Create a Google Sheet with columns in this exact order: Book Name, Author, Category, Upload Date, Link, Cover (URL), Language.",
+                adminHowToStep1: "Create a Google Sheet with columns in this exact order: Book Name, Author, Group, Subgroup, Upload Date, Link, Cover (URL), Language.",
                 adminHowToStep2: "In Google Sheets, click on: File > Share > Publish to the Web.",
                 adminHowToStep3: "In the dialog box, select \"Comma-separated values (.csv)\".",
                 adminHowToStep4: "Click Publish, copy the generated link, and add it below!",
-                adminDisclaimerTitle: "Disclaimer on Custom Databases",
-                adminDisclaimerDesc: "The official pattern sheet of the **Bibli.on.med** project is manually reviewed against malware. By connecting custom external sheets, the platform is not responsible for security, reliability of binary files, or integrity of third-party redirects.",
                 adminCsvLabel: "Add Spreadsheet URL (.csv)",
-                adminCsvBtn: "Save Link",
                 adminRestoreBtn: "Restore Default Official Sheet",
                 footerBrandSub: "Open Medical Library",
                 footerCopy: "© 2026 Bibli.on.med. Developed to facilitate access to healthcare and medical education in Latin America.",
@@ -965,7 +1019,6 @@
                 modalSafeVal: "Safe & Clean",
                 modalUploadLabel: "Available on:",
                 modalLangLabel: "Primary Language:",
-                modalLangVal: "Portuguese / Spanish",
                 modalDownloadBtn: "Download Book Safely",
                 modalFavAdd: "Add to Favorites",
                 modalFavRemove: "Remove from Favorites",
@@ -980,7 +1033,14 @@
                 devTitle: "From student to student",
                 devDesc: "This project is completely open source and transparent. Follow the Creator on Instagram, or explore the source code directly in the official GitHub repository!",
                 githubBtn: "Project GitHub",
-                instagramBtn: "Instagram of Creator"
+                instagramBtn: "Instagram of Creator",
+                filterBtn: "Filter & Sort",
+                sortTitle: "Sort Collection By:",
+                sortNewest: "Newest (Upload)",
+                sortAZ: "Alphabetical (A-Z)",
+                sortZA: "Reverse Order (Z-A)",
+                filterTypesTitle: "File Formats:",
+                filterClearBtn: "Clear"
             }
         };
 
@@ -1060,7 +1120,12 @@
         let books = [];
         let filteredBooks = [];
         let searchFilter = '';
-        let categoryFilter = 'all';
+        let categoryFilter = 'all'; // Representa o Grupo (Matéria)
+        
+        // Novos estados para a filtragem avançada
+        let selectedSubgroups = []; // Array contendo os subgrupos marcados
+        let sortBy = 'newest';      // 'newest' | 'az' | 'za'
+
         let currentUser = null;
         let userProfile = { nickname: 'Interno Anon', avatar: 'BOOK', favorites: [], customAvatar: '', lang: 'pt' };
         let currentSelectedBook = null;
@@ -1176,33 +1241,98 @@
             }
         }
 
-        function renderCategoryButtons() {
-            const container = document.getElementById('categories-container');
-            if (!container) return;
-            const uniqueCategories = [...new Set(books.map(b => b.categoria).filter(Boolean))];
-            uniqueCategories.sort();
+        // CONTROL OF FLOATING ADVANCED FILTERS PANEL
+        window.toggleFilterDropdown = function(event) {
+            event.stopPropagation();
+            const panel = document.getElementById('filter-dropdown-panel');
+            panel.classList.toggle('hidden');
+        };
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const panel = document.getElementById('filter-dropdown-panel');
+            if (panel && !panel.classList.contains('hidden') && !panel.contains(event.target)) {
+                panel.classList.add('hidden');
+            }
+        });
+
+        function renderCategoriesAndFilters() {
+            // 1. Grupos (Matérias)
+            const groupContainer = document.getElementById('categories-container');
+            if (!groupContainer) return;
+            
+            const uniqueGroups = [...new Set(books.map(b => b.grupo).filter(Boolean))];
+            uniqueGroups.sort();
 
             const currentLang = userProfile.lang || 'pt';
             const dict = translations[currentLang] || translations['pt'];
             const allText = dict.catAll || "Todos os Livros";
 
-            let html = `
+            let groupHtml = `
                 <button onclick="filterCategory('all')" id="cat-all" class="cat-btn ${categoryFilter === 'all' ? 'active bg-moss-600 text-white shadow-md shadow-moss-100' : 'bg-white text-slate-600 hover:bg-moss-50 border border-slate-100'} px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all">
                     ${allText}
                 </button>
             `;
 
-            uniqueCategories.forEach(cat => {
-                const isActive = categoryFilter === cat;
-                const normalizedId = 'cat-' + normalizeString(cat).replace(/\s+/g, '');
-                html += `
-                    <button onclick="filterCategory('${cat}')" id="${normalizedId}" class="cat-btn ${isActive ? 'active bg-moss-600 text-white shadow-md shadow-moss-100' : 'bg-white text-slate-600 hover:bg-moss-50 border border-slate-100'} px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all">
-                        ${cat}
+            uniqueGroups.forEach(group => {
+                const isActive = categoryFilter === group;
+                const normalizedId = 'cat-' + normalizeString(group).replace(/\s+/g, '');
+                groupHtml += `
+                    <button onclick="filterCategory('${group}')" id="${normalizedId}" class="cat-btn ${isActive ? 'active bg-moss-600 text-white shadow-md shadow-moss-100' : 'bg-white text-slate-600 hover:bg-moss-50 border border-slate-100'} px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all">
+                        ${group}
                     </button>
                 `;
             });
-            container.innerHTML = html;
+            groupContainer.innerHTML = groupHtml;
+
+            // 2. Subgrupos Checkboxes (Dentro do Painel Dropdown)
+            const subContainer = document.getElementById('filter-subgroups-list');
+            if (!subContainer) return;
+
+            // Extract subgroups, filter empty values
+            const uniqueSubgroups = [...new Set(books.map(b => b.subgrupo).filter(Boolean))];
+            uniqueSubgroups.sort();
+
+            let subHtml = '';
+            uniqueSubgroups.forEach(sub => {
+                const isChecked = selectedSubgroups.includes(sub);
+                subHtml += `
+                    <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer hover:text-navy-900 transition-colors py-0.5">
+                        <input type="checkbox" value="${sub}" ${isChecked ? 'checked' : ''} onchange="handleSubgroupCheckboxChange(this)" class="rounded text-moss-600 focus:ring-moss-500 h-3.5 w-3.5 border-slate-300">
+                        <span>${sub}</span>
+                    </label>
+                `;
+            });
+            subContainer.innerHTML = subHtml || `<p class="text-[10px] text-slate-400">Nenhum tipo disponível</p>`;
         }
+
+        window.handleSubgroupCheckboxChange = function(checkbox) {
+            const val = checkbox.value;
+            if (checkbox.checked) {
+                if (!selectedSubgroups.includes(val)) {
+                    selectedSubgroups.push(val);
+                }
+            } else {
+                selectedSubgroups = selectedSubgroups.filter(item => item !== val);
+            }
+            applyFilters();
+        };
+
+        window.clearSubgroupFilters = function() {
+            selectedSubgroups = [];
+            
+            // Uncheck all checkboxes in visual UI
+            const container = document.getElementById('filter-subgroups-list');
+            if (container) {
+                container.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            }
+            applyFilters();
+        };
+
+        window.handleSortChange = function(sortType) {
+            sortBy = sortType;
+            applyFilters();
+        };
 
         async function loadSpreadsheetData() {
             let activeUrls = [];
@@ -1221,35 +1351,36 @@
             const statusBadge = document.getElementById('sheet-status');
             const sourceLabel = document.getElementById('data-source-label');
 
-            // Cache revalidation phase
+            // Cache revalidation phase (SWR)
             const cachedData = localStorage.getItem('biblionmed_books_cache');
             if (cachedData) {
                 try {
                     books = JSON.parse(cachedData);
                     applyFilters();
-                    renderCategoryButtons();
+                    renderCategoriesAndFilters();
+                    
+                    const currentLang = userProfile.lang || 'pt';
+                    const hasCustom = activeUrls.some(url => url !== DEFAULT_SHEET_URL);
+                    
                     if (sourceLabel) {
-                        const currentLang = userProfile.lang || 'pt';
-                        const hasCustom = activeUrls.some(url => url !== DEFAULT_SHEET_URL);
-                        if (statusBadge) {
-                            if (hasCustom) {
-                                statusBadge.textContent = currentLang === 'en' ? "Custom Sheets Connected" : currentLang === 'es' ? "Planillas Personalizadas Conectadas" : "Planilhas Customizadas Conectadas";
-                                statusBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700";
-                            } else {
-                                statusBadge.textContent = currentLang === 'en' ? "Official Sheet Active" : currentLang === 'es' ? "Planilla Oficial Activa" : "Planilla Oficial Ativa";
-                                statusBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700";
-                            }
-                        }
                         sourceLabel.innerHTML = hasCustom 
-                            ? `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Sincronizado: Base Customizada' : currentLang === 'es' ? 'Sincronizado: Base Personalizada' : 'Sincronizado: Base Customizada'}`
-                            : `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Sincronizado: Base Oficial' : currentLang === 'es' ? 'Sincronizado: Base Oficial' : 'Sincronizado: Base Oficial'}`;
+                            ? `<i class="fa-solid fa-circle-check text-emerald-500"></i> Sincronizado: Base Customizada`
+                            : `<i class="fa-solid fa-circle-check text-emerald-500"></i> Sincronizado: Base Oficial`;
+                    }
+                    if (statusBadge) {
+                        if (hasCustom) {
+                            statusBadge.textContent = currentLang === 'en' ? "Custom Sheets Connected" : currentLang === 'es' ? "Planillas Personalizadas Conectadas" : "Planilhas Customizadas Conectadas";
+                            statusBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700";
+                        } else {
+                            statusBadge.textContent = currentLang === 'en' ? "Official Sheet Active" : currentLang === 'es' ? "Planilla Oficial Activa" : "Planilla Oficial Ativa";
+                            statusBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700";
+                        }
                     }
                 } catch (err) {
-                    console.warn("Could not load book cache securely:", err);
+                    console.warn("Could not load book cache safely:", err);
                 }
             }
 
-            // Fetching and merging multiple spreadsheets live
             let loadedBooks = [];
             let successfulFetches = 0;
 
@@ -1268,11 +1399,12 @@
                                     id: `sheet-${loadedBooks.length + 1}`,
                                     nome: r[0] || 'Sem Título',
                                     autor: r[1] || 'Autor Desconhecido',
-                                    categoria: r[2] || 'Outros',
-                                    uploadDate: r[3] || 'Desconhecida',
-                                    link: r[4] || '#',
-                                    capa: r[5] || '',
-                                    idioma: r[6] || ''
+                                    grupo: r[2] || 'Outros',      // Matéria
+                                    subgrupo: r[3] || 'Outros',   // Tipo (Livro, Slide, Resumo, etc.)
+                                    uploadDate: r[4] || 'Desconhecida',
+                                    link: r[5] || '#',
+                                    capa: r[6] || '',
+                                    idioma: r[7] || ''
                                 });
                             }
                         }
@@ -1284,7 +1416,6 @@
             }
 
             if (loadedBooks.length > 0) {
-                // Deduplicate books by name + link
                 const uniqueSet = new Map();
                 loadedBooks.forEach(b => {
                     const key = normalizeString(b.nome) + "_" + normalizeString(b.link);
@@ -1294,9 +1425,8 @@
                 });
                 books = Array.from(uniqueSet.values());
                 localStorage.setItem('biblionmed_books_cache', JSON.stringify(books));
-                renderCategoryButtons();
+                renderCategoriesAndFilters();
                 
-                const currentLang = userProfile.lang || 'pt';
                 if (statusBadge) {
                     statusBadge.textContent = `${successfulFetches}/${activeUrls.length} Fontes Ativas`;
                     statusBadge.className = "text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700";
@@ -1304,11 +1434,9 @@
                 
                 if (sourceLabel) {
                     const hasCustom = activeUrls.some(url => url !== DEFAULT_SHEET_URL);
-                    if (hasCustom) {
-                        sourceLabel.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Sincronizado: Base Customizada' : currentLang === 'es' ? 'Sincronizado: Base Personalizada' : 'Sincronizado: Base Customizada'}`;
-                    } else {
-                        sourceLabel.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500"></i> ${currentLang === 'en' ? 'Sincronizado: Base Oficial' : currentLang === 'es' ? 'Sincronizado: Base Oficial' : 'Sincronizado: Base Oficial'}`;
-                    }
+                    sourceLabel.innerHTML = hasCustom 
+                        ? `<i class="fa-solid fa-circle-check text-emerald-500"></i> Sincronizado: Base Customizada`
+                        : `<i class="fa-solid fa-circle-check text-emerald-500"></i> Sincronizado: Base Oficial`;
                 }
             } else if (!cachedData) {
                 showToast("Nenhuma planilha ativa pôde ser carregada.", "error");
@@ -1479,7 +1607,7 @@
                     </div>
                     <div class="truncate">
                         <p class="font-bold text-navy-900 truncate">${book.nome}</p>
-                        <p class="text-[9px] text-slate-400 truncate">Por ${book.autor} • ${book.categoria}</p>
+                        <p class="text-[9px] text-slate-400 truncate">Por ${book.autor} • ${book.grupo} • ${book.subgrupo}</p>
                     </div>
                 `;
                 item.onclick = () => {
@@ -1504,7 +1632,7 @@
 
         window.filterCategory = function(cat) {
             categoryFilter = cat;
-            renderCategoryButtons();
+            renderCategoriesAndFilters();
             applyFilters();
         };
 
@@ -1516,11 +1644,30 @@
                 const matchSearch = searchTerms.length === 0 || searchTerms.every(term => {
                     return normalizeString(book.nome).includes(term) || 
                            normalizeString(book.autor).includes(term) || 
-                           normalizeString(book.categoria).includes(term);
+                           normalizeString(book.grupo).includes(term) ||
+                           normalizeString(book.subgrupo).includes(term);
                 });
-                const matchCategory = categoryFilter === 'all' || book.categoria === categoryFilter;
-                return matchSearch && matchCategory;
+                const matchCategory = categoryFilter === 'all' || book.grupo === categoryFilter;
+                
+                // MULTI-SELECT SUBGROUPS FILTER
+                const matchSubgroup = selectedSubgroups.length === 0 || selectedSubgroups.includes(book.subgrupo);
+                
+                return matchSearch && matchCategory && matchSubgroup;
             });
+
+            // APPLY ADVANCED SORTING (A-Z, Z-A, Newest)
+            if (sortBy === 'az') {
+                filteredBooks.sort((a, b) => a.nome.localeCompare(b.nome));
+            } else if (sortBy === 'za') {
+                filteredBooks.sort((a, b) => b.nome.localeCompare(a.nome));
+            } else if (sortBy === 'newest') {
+                filteredBooks.sort((a, b) => {
+                    const dateA = a.uploadDate && a.uploadDate !== 'Desconhecida' ? a.uploadDate : '0000-00-00';
+                    const dateB = b.uploadDate && b.uploadDate !== 'Desconhecida' ? b.uploadDate : '0000-00-00';
+                    return dateB.localeCompare(dateA);
+                });
+            }
+
             renderBooks();
         }
 
@@ -1542,24 +1689,29 @@
             const grid = document.getElementById('books-grid');
             const emptyState = document.getElementById('empty-state');
             const countLabel = document.getElementById('books-count-label');
+            if (!grid) return;
             grid.innerHTML = '';
             
             const currentLang = userProfile.lang || 'pt';
+            let labelText = '';
             if (currentLang === 'en') {
-                countLabel.textContent = `Showing ${filteredBooks.length} of ${books.length} books`;
+                labelText = `Showing ${filteredBooks.length} of ${books.length} items`;
             } else if (currentLang === 'es') {
-                countLabel.textContent = `Mostrando ${filteredBooks.length} de ${books.length} libros`;
+                labelText = `Mostrando ${filteredBooks.length} de ${books.length} ítems`;
             } else {
-                countLabel.textContent = `Mostrando ${filteredBooks.length} de ${books.length} livros`;
+                labelText = `Mostrando ${filteredBooks.length} de ${books.length} livros`;
+            }
+            if (countLabel) {
+                countLabel.textContent = labelText;
             }
 
             if (filteredBooks.length === 0) {
-                emptyState.classList.remove('hidden');
+                if (emptyState) emptyState.classList.remove('hidden');
                 grid.classList.add('hidden');
                 return;
             }
 
-            emptyState.classList.add('hidden');
+            if (emptyState) emptyState.classList.add('hidden');
             grid.classList.remove('hidden');
 
             filteredBooks.forEach(book => {
@@ -1570,8 +1722,8 @@
                 const cbCapa = book.capa ? book.capa.trim() : '';
                 const escapedNome = book.nome.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
                 const coverHTML = cbCapa ? 
-                    `<img src="${cbCapa}" alt="Capa" data-title="${escapedNome}" data-category="${book.categoria}" class="w-full h-full object-cover rounded-lg shadow-md shrink-0 border border-slate-100" onerror="window.handleImageError(this)"/>` : 
-                    window.createGenericBookCoverHTML(book.nome, book.categoria, true);
+                    `<img src="${cbCapa}" alt="Capa" data-title="${escapedNome}" data-category="${book.grupo}" class="w-full h-full object-cover rounded-lg shadow-md shrink-0 border border-slate-100" onerror="window.handleImageError(this)"/>` : 
+                    window.createGenericBookCoverHTML(book.nome, book.grupo, true);
 
                 const accessText = currentLang === 'en' ? 'Access' : currentLang === 'es' ? 'Acceder' : 'Acessar';
 
@@ -1582,7 +1734,7 @@
                     <div class="flex-grow flex flex-col justify-between min-w-0">
                         <div class="min-w-0">
                             <div class="flex items-center justify-between gap-1 mb-1">
-                                <span class="bg-moss-50 text-moss-700 text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider truncate max-w-[70%]">${book.categoria}</span>
+                                <span class="bg-moss-50 text-moss-700 text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider truncate max-w-[75%]">${book.grupo} • ${book.subgrupo}</span>
                                 <button onclick="event.stopPropagation(); window.toggleFavorite('${book.id}')" class="text-slate-300 hover:text-amber-500 transition-all p-1 -mr-1" title="Favoritar">
                                     <i class="${isFav ? 'fa-solid text-amber-500' : 'fa-regular'} fa-star text-xs"></i>
                                 </button>
@@ -1642,9 +1794,9 @@
                 document.getElementById('upload-icon').className = "fa-solid fa-circle-check text-emerald-500 text-3xl mb-2";
                 
                 document.getElementById('upload-text').textContent = `${file.name}`;
-                document.getElementById('upload-subtext').textContent = `Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB | Varredura Completa`;
-                showToast("Arquivo verificado! Pronto para envio direto ao acervo do Drive.", "success");
-            }, 3200);
+                document.getElementById('upload-subtext').textContent = `Tamanho: ${(file.size / (1024 * 1024)).toFixed(2)} MB | Verificação Limpa`;
+                showToast("Arquivo verificado! Pronto para envio ao Drive.", "success");
+            }, 1600);
         }
 
         window.handleCoverFileSelect = function(input) {
@@ -1699,6 +1851,7 @@
             const name = document.getElementById('suggest-name').value.trim();
             const author = document.getElementById('suggest-author').value.trim() || 'Autor Desconhecido';
             const category = document.getElementById('suggest-category').value;
+            const subgroup = document.getElementById('suggest-subgroup').value;
             const submitBtn = document.getElementById('contrib-submit-btn');
 
             if (contributionType === 'file' && !selectedFile) {
@@ -1707,12 +1860,14 @@
             }
 
             submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Enviando para o Google Drive...`;
+            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Preparando pacotes...`;
 
             try {
                 if (contributionType === 'link') {
                     const directLink = document.getElementById('suggest-link').value;
                     showToast("Sua sugestão de link foi registrada! Envie no grupo de WhatsApp para agilizar a integração.", "success");
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Enviar Contribuição`;
                 } else {
                     const base64File = await fileToBase64(selectedFile);
                     let base64Cover = "";
@@ -1721,8 +1876,8 @@
                     }
 
                     const ext = selectedFile.name.split('.').pop() || 'pdf';
-                    const formattedBookName = `${name} - ${author} - ${category}.${ext}`;
-                    const formattedCoverName = `${name} - ${author} - ${category} - Capa.jpg`;
+                    const formattedBookName = `${name} - ${author} - ${category} - ${subgroup}.${ext}`;
+                    const formattedCoverName = `${name} - ${author} - ${category} - ${subgroup} - Capa.jpg`;
 
                     const payload = {
                         fileData: base64File,
@@ -1732,34 +1887,62 @@
                         coverFileName: formattedCoverName
                     };
 
-                    await fetch(GAS_WEBAPP_URL, {
-                        method: "POST",
-                        mode: "no-cors", 
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(payload)
+                    const progressContainer = document.getElementById('realtime-upload-progress');
+                    const progressFilename = document.getElementById('progress-filename');
+                    const progressPercent = document.getElementById('progress-percent');
+                    const progressBarFill = document.getElementById('progress-bar-fill');
+                    
+                    progressContainer.classList.remove('hidden');
+                    progressFilename.textContent = formattedBookName;
+                    submitBtn.classList.add('hidden');
+
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", GAS_WEBAPP_URL, true);
+                    xhr.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+
+                    xhr.upload.addEventListener("progress", (evt) => {
+                        if (evt.lengthComputable) {
+                            const percent = Math.round((evt.loaded / evt.total) * 100);
+                            progressPercent.textContent = `${percent}%`;
+                            progressBarFill.style.width = `${percent}%`;
+                        }
                     });
 
-                    showToast("Livro recebido com sucesso no Google Drive do Acervo!", "success");
-                }
+                    xhr.onload = function() {
+                        showToast("Livro e arquivos enviados com sucesso para o Drive!", "success");
+                        
+                        document.getElementById('suggestion-form').reset();
+                        selectedFile = null;
+                        selectedCoverBase64 = '';
+                        document.getElementById('suggest-cover-preview').classList.add('hidden');
+                        document.getElementById('suggest-cover-placeholder').classList.remove('hidden');
+                        document.getElementById('upload-icon').className = "fa-solid fa-cloud-arrow-up text-slate-400 text-3xl mb-2";
+                        document.getElementById('upload-text').textContent = "Arraste seu PDF aqui ou clique para buscar";
+                        document.getElementById('upload-subtext').textContent = "Os arquivos serão salvos diretamente no Google Drive.";
+                        document.getElementById('drop-zone').className = "border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-moss-500 cursor-pointer transition-all bg-slate-50 flex flex-col items-center justify-center min-h-[140px]";
+                        
+                        progressContainer.classList.add('hidden');
+                        submitBtn.classList.remove('hidden');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Enviar Contribuição`;
+                        
+                        switchTab('search');
+                    };
 
-                document.getElementById('suggestion-form').reset();
-                selectedFile = null;
-                selectedCoverBase64 = '';
-                document.getElementById('suggest-cover-preview').classList.add('hidden');
-                document.getElementById('suggest-cover-placeholder').classList.remove('hidden');
-                document.getElementById('upload-icon').className = "fa-solid fa-cloud-arrow-up text-slate-400 text-3xl mb-2";
-                document.getElementById('upload-text').textContent = "Arraste seu PDF aqui ou clique para buscar";
-                document.getElementById('upload-subtext').textContent = "Os arquivos serão salvos diretamente no Google Drive.";
-                document.getElementById('drop-zone').className = "border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:border-moss-500 cursor-pointer transition-all bg-slate-50 flex flex-col items-center justify-center min-h-[140px]";
-                
-                switchTab('search');
+                    xhr.onerror = function() {
+                        showToast("Ocorreu um erro no servidor de upload do Google Drive.", "error");
+                        progressContainer.classList.add('hidden');
+                        submitBtn.classList.remove('hidden');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Enviar Contribuição`;
+                    };
+
+                    xhr.send(JSON.stringify(payload));
+                }
 
             } catch (err) {
                 console.error("Upload error", err);
-                showToast("Ocorreu um erro no servidor de upload do Google Drive.", "error");
-            } finally {
+                showToast("Ocorreu um erro ao compactar o arquivo.", "error");
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Enviar Contribuição`;
             }
@@ -1855,9 +2038,11 @@
                 tab.classList.remove('tab-animate-active');
             });
             const activeTabEl = document.getElementById(`tab-${tabName}`);
-            activeTabEl.classList.remove('hidden');
-            void activeTabEl.offsetWidth;
-            activeTabEl.classList.add('tab-animate-active');
+            if (activeTabEl) {
+                activeTabEl.classList.remove('hidden');
+                void activeTabEl.offsetWidth;
+                activeTabEl.classList.add('tab-animate-active');
+            }
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('border-moss-500', 'text-white');
@@ -1865,7 +2050,7 @@
             });
             const activeBtn = document.getElementById(`nav-${tabName}`);
             if (activeBtn) {
-                activeBtn.classList.add('border-moss-500', 'text-white');
+                activeBtn.add = activeBtn.classList.add('border-moss-500', 'text-white');
                 activeBtn.classList.remove('border-transparent', 'text-moss-100');
             }
 
@@ -1891,7 +2076,7 @@
             const currentLang = userProfile.lang || 'pt';
             const authorPrefix = currentLang === 'en' ? 'By' : 'Por';
             document.getElementById('modal-author').textContent = `${authorPrefix} ${book.autor}`;
-            document.getElementById('modal-category').textContent = book.categoria;
+            document.getElementById('modal-category').textContent = `${book.grupo} • ${book.subgrupo}`;
             document.getElementById('modal-upload').textContent = book.uploadDate;
             
             const modalLangElement = document.getElementById('modal-lang');
@@ -1907,7 +2092,7 @@
                 const escapedNome = book.nome.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
                 coverContainer.innerHTML = `<img src="${book.capa}" alt="Capa" class="w-full h-full object-cover" onerror="window.handleImageError(this)"/>`;
             } else {
-                coverContainer.innerHTML = createGenericBookCoverHTML(book.nome, book.categoria, true);
+                coverContainer.innerHTML = createGenericBookCoverHTML(book.nome, book.grupo, true);
             }
 
             const isFav = userProfile.favorites && userProfile.favorites.includes(book.id);
@@ -2004,6 +2189,7 @@
 
         function renderProfileFavorites() {
             const list = document.getElementById('favorites-list');
+            if (!list) return;
             const currentLang = userProfile.lang || 'pt';
 
             if (!userProfile.favorites || userProfile.favorites.length === 0) {
@@ -2059,7 +2245,7 @@
             });
             loadSpreadsheetData();
             switchTab('search');
-            setInterval(rotateSubtitle, 12000); // Exatos 12 segundos para leitura confortável
+            setInterval(rotateSubtitle, 12000); // 12 segundos para leitura confortável
         };
 
     </script>
