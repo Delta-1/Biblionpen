@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bibli.on.med - Biblioteca Aberta de Medicina</title>
+    <!-- Favicon do Site -->
+    <link rel="icon" type="image/png" href="favicon.png">
     <!-- Tailwind CSS para Estilização de Alto Nível -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter para Legibilidade e Elegância -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Font Awesome para Ícones Modernos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -801,18 +803,18 @@
                 adminSub: "Esta área é restrita para o criador do projeto gerenciar o banco de dados e as fontes do acervo.",
                 adminPasskeyPlaceholder: "Digite a Chave de Acesso",
                 adminValidateBtn: "Validar Credenciais",
-                adminConfigTitle: "Configuração de Banco de Dados",
-                adminConfigSub: "Gerencie múltiplos links de planilhas para agregar ao acervo geral",
+                adminConfigTitle: "Database Configuration",
+                adminConfigSub: "Manage multiple spreadsheet links to aggregate into the main library",
                 adminLockBtn: "Bloquear Painel",
                 adminHowToTitle: "Como agregar suas Planilhas Google?",
                 adminHowToStep1: "Crie uma planilha no Google Planilhas com as colunas exatamente nesta ordem: Nome do livro, Autor, Grupo, Subgrupo, Data de upload, Link, Capa (URL), Idioma.",
                 adminHowToStep2: "No Google Planilhas, clique em: Arquivo > Compartilhar > Publicar na Web.",
                 adminHowToStep3: "Na caixa de diálogo, selecione \"Valores separados por vírgulas (.csv)\".",
-                adminHowToStep4: "Clique em Publicar, copie o link gerado e adicione-o na lista abaixo!",
-                adminCsvLabel: "Adicionar URL de Planilha (.csv)",
-                adminRestoreBtn: "Restaurar Planilha Oficial Padrão",
-                footerBrandSub: "Biblioteca Aberta de Medicina",
-                footerCopy: "© 2026 Bibli.on.med. Desenvolvido para facilitar o acesso à saúde e educação médica na América Latina.",
+                adminHowToStep4: "Clique em Publicar, copie o link gerado e adicione-o abaixo!",
+                adminCsvLabel: "Add Spreadsheet URL (.csv)",
+                adminRestoreBtn: "Restore Default Official Sheet",
+                footerBrandSub: "Open Medical Library",
+                footerCopy: "© 2026 Bibli.on.med. Developed to facilitate access to healthcare and medical education in Latin America.",
                 modalSafeAccent: "Arquivo Seguro Antivírus",
                 modalSafeLabel: "Análise Antivírus:",
                 modalSafeVal: "Seguro e Limpo",
@@ -899,7 +901,7 @@
                 contribSubcatLabel: "Subgrupo (Tipo) *",
                 contribSubmit: "Enviar Contribución",
                 adminTitle: "Acceso de Administrador",
-                adminSub: "Esta área está restringida para que el creador del proyecto administre la base de datos y las fuentes de la biblioteca.",
+                adminSub: "Esta área está restringida para que el creador del proyecto administre la base de dados y las fuentes de la biblioteca.",
                 adminPasskeyPlaceholder: "Escribe la Clave de Acceso",
                 adminValidateBtn: "Validar Credenciales",
                 adminConfigTitle: "Configuración de la Base de Datos",
@@ -932,8 +934,8 @@
                 devBadge: "De Estudiante a Estudiante",
                 devTitle: "De estudiante a estudiante",
                 devDesc: "Este proyecto es completamente de código aberto (Open Source) y transparente. ¡Sigue al Creador en Instagram o explora el código fuente directamente en el repositorio oficial de GitHub!",
-                githubBtn: "GitHub del Proyecto",
-                instagramBtn: "Instagram del Criador",
+                githubBtn: "GitHub do Projeto",
+                instagramBtn: "Instagram do Criador",
                 filterBtn: "Filtrar & Ordenar",
                 sortTitle: "Ordenar por:",
                 sortNewest: "Más Recientes",
@@ -2053,7 +2055,7 @@
             });
             const activeBtn = document.getElementById(`nav-${tabName}`);
             if (activeBtn) {
-                activeBtn.add = activeBtn.classList.add('border-moss-500', 'text-white');
+                activeBtn.classList.add('border-moss-500', 'text-white');
                 activeBtn.classList.remove('border-transparent', 'text-moss-100');
             }
 
@@ -2155,7 +2157,7 @@
                 localStorage.setItem('biblionmed_local_user', JSON.stringify(userProfile));
             }
             updateUIWithProfile();
-            showToast("Perfil updated!", "success");
+            showToast("Perfil atualizado!", "success");
             closeProfileModal();
         };
 
