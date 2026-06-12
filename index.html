@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bibli.on.med - Biblioteca Aberta de Medicina</title>
+    <!-- Vinculação do Manifesto PWA (Para ativar a instalação com foto) -->
+    <link rel="manifest" href="manifest.json">
     <!-- Favicon do Site -->
     <link rel="icon" type="image/png" href="favicon.png">
     <!-- Tailwind CSS para Estilização de Alto Nível -->
@@ -768,7 +770,7 @@
                 howItWorks: "Como funciona o acervo?",
                 howStep1Title: "Curadoria Especializada:",
                 howStep1Desc: "Livros divididos pelas cadeiras clássicas de medicina (Anatomia, Fisiologia, Patologia, etc.).",
-                howStep2Title: "Links Diretos:",
+                howStep2Title: "Links Directos:",
                 howStep2Desc: "Sem protetores de link irritantes, direcionamento direto para servidores de alta velocidade (MediaFire/Google Drive).",
                 howStep3Title: "Atualização Dinâmica:",
                 howStep3Desc: "O catálogo é alimentado por uma planilha na nuvem gerenciada ativamente por nós.",
@@ -862,13 +864,13 @@
                 emptyStateSub: "No encontramos coincidencias con su búsqueda en la planilla.",
                 aboutTitle: "El Enfoque de Bibli.on.med",
                 aboutSub: "Apoyo Académico Sin Fines de Lucro",
-                aboutP1: "La rutina de un estudiante de medicina en América Latina está llena de desafíos. Además del horario de clases agotador, el costo de los libros técnicos y manuales clínicos de referencia internacional puede ser prohibitivo para la mayoría de los futuros médicos.",
+                aboutP1: "La rutina de un estudiante de medicina en América Latina está llena de desafíos. Além de el horario de clases agotador, el costo de los libros técnicos y manuales clínicos de referencia internacional puede ser prohibitivo para la mayoría de los futuros médicos.",
                 aboutP2: "El objetivo de Bibli.on.med es simplificar la búsqueda y democratizar el acceso al conocimiento médico de calidad.",
                 aboutShieldTitle: "🛡️ Compromiso con la Seguridad Biológica (¡y Digital!)",
                 aboutShieldDesc: "Todos los enlaces de descarga disponibles en la biblioteca están previamente verificados. Garantizamos que los archivos estén libres de virus, scripts maliciosos o anuncios abusivos. ¡Nos enfocamos solo en el PDF limpio!",
                 howItWorks: "¿Cómo funciona la biblioteca?",
                 howStep1Title: "Curaduría Especializada:",
-                howStep1Desc: "Libros divididos por las asignaturas clásicas de medicina (Anatomía, Fisiología, Patología, etc.).",
+                howStep1Desc: "Libros divididos por las asignaturas clásicas de medicina (Anatómia, Fisiología, Patología, etc.).",
                 howStep2Title: "Enlaces Directos:",
                 howStep2Desc: "Sin molestos acortadores de enlaces, direccionamiento directo a servidores de alta velocidad (MediaFire/Google Drive).",
                 howStep3Title: "Actualización Dinámica:",
@@ -933,7 +935,7 @@
                 profileCamTitle: "Subir Foto Propia",
                 devBadge: "De Estudiante a Estudiante",
                 devTitle: "De estudiante a estudiante",
-                devDesc: "Este proyecto es completamente de código aberto (Open Source) y transparente. ¡Sigue al Creador en Instagram o explora el código fuente directamente en el repositorio oficial de GitHub!",
+                devDesc: "Este projeto es completamente de código aberto (Open Source) y transparente. ¡Sigue al Creador en Instagram o explora el código fuente directamente en el repositorio oficial de GitHub!",
                 githubBtn: "GitHub do Projeto",
                 instagramBtn: "Instagram do Criador",
                 filterBtn: "Filtrar & Ordenar",
@@ -1057,9 +1059,9 @@
             ],
             es: [
                 "La mayor biblioteca de medicina gratuita, revisada y libre de virus para estudiantes de América Latina.",
-                "¿Sabías que tú también puedes contribuir con libros?",
+                "¿Sabías que tú também puedes contribuir con libros?",
                 "¿Tienes alguna sugerencia de libro? Ponte en contacto en el grupo de WhatsApp.",
-                "Cuando lo encuentres avísame 👀.",
+                "Quando lo encuentres avísame 👀.",
                 "¿Estás disfrutando de la experiencia? ¡Eso espero!"
             ],
             en: [
@@ -1788,7 +1790,7 @@
             const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/_/g, " ");
             document.getElementById('suggest-name').value = cleanName;
 
-            setTimeout(() => { bar.style.width = "100%"; }, 100);
+            setTimeout(() => { bar.style.width = "0%"; }, 100);
 
             setTimeout(() => {
                 loader.classList.add('hidden');
@@ -2157,7 +2159,7 @@
                 localStorage.setItem('biblionmed_local_user', JSON.stringify(userProfile));
             }
             updateUIWithProfile();
-            showToast("Perfil atualizado!", "success");
+            showToast("Perfil updated!", "success");
             closeProfileModal();
         };
 
@@ -2253,6 +2255,17 @@
             setInterval(rotateSubtitle, 12000); // 12 segundos para leitura confortável
         };
 
+    </script>
+
+    <!-- ROTEIRO DE SCRIPT PARA REGISTRO DO SERVICE WORKER (PWA) -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Bibli.on.med pronto para instalação offline!', reg))
+                    .catch(err => console.error('Falha ao registrar instalador do PWA:', err));
+            });
+        }
     </script>
 </body>
 </html>
