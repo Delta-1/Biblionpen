@@ -1,0 +1,22 @@
+{
+  "short_name": "Bibli.on.med",
+  "name": "Bibli.on.med - Biblioteca Aberta de Medicina",
+  "description": "Biblioteca aberta, gratuita e revisada de medicina para estudantes.",
+  "icons": [
+    {
+      "src": "assets/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "assets/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#0B132B",
+  "theme_color": "#4E6E58",
+  "display": "standalone",
+  "orientation": "portrait"
+}
