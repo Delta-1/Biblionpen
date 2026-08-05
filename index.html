@@ -1597,10 +1597,191 @@
             });
         }
 
+        /* ═══════════════════════════════════════════════════════════════════
+           BUSCA NA WEB — o acervo deixa de ser o limite.
+
+           Tudo daqui roda no NAVEGADOR de quem está usando: o site continua
+           sendo um arquivo estático, sem servidor e sem banco de dados. Quando
+           alguém procura, a pergunta vai direto para catálogos abertos que
+           respondem com CORS liberado.
+
+           São quatro fontes, de propósito bem diferentes entre si:
+             • Project Gutenberg — domínio público, texto completo, para ler
+               na hora.
+             • Internet Archive  — acervo COMUNITÁRIO: quem envia é o público,
+               não uma editora. É onde mora o que não é oficial.
+             • Wikisource        — transcrição feita por voluntários.
+             • Open Library      — a ficha do livro, quando o resto não achar.
+
+           Cada uma falha sozinha: se o Archive cair, as outras três continuam
+           respondendo. Busca de biblioteca não pode virar tela de erro.
+           ═══════════════════════════════════════════════════════════════════ */
+
+        let webBooks = [];
+        let webBuscando = false;
+        let webTimer = null;
+        let webUltimoTermo = '';
+
+        async function pegarJSON(url, ms = 12000) {
+            const corta = new AbortController();
+            const t = setTimeout(() => corta.abort(), ms);
+            try {
+                const r = await fetch(url, { signal: corta.signal });
+                if (!r.ok) return null;
+                return await r.json();
+            } catch (e) {
+                return null;
+            } finally {
+                clearTimeout(t);
+            }
+        }
+
+        /* "Austen, Jane, 1775-1817" -> "Jane Austen". Catálogo guarda
+           invertido e com datas coladas; gente lê do jeito normal. */
+        function limparAutor(s) {
+            if (!s) return 'Autor desconhecido';
+            const m = /^([^,]+),\s*(.+)$/.exec(String(s).trim());
+            if (!m) return String(s).trim();
+            const resto = m[2].replace(/,?\s*\d{3,4}\??\s*-\s*\d{0,4}\??\.?$/, '').trim();
+            return resto ? `${resto} ${m[1].trim()}` : m[1].trim();
+        }
+
+        async function buscarGutenberg(termo) {
+            const j = await pegarJSON(`https://gutendex.com/books?search=${encodeURIComponent(termo)}`);
+            if (!j || !j.results) return [];
+            return j.results.slice(0, 12).map(l => ({
+                id: `web-gutenberg-${l.id}`,
+                nome: l.title || 'Sem título',
+                autor: limparAutor(l.authors && l.authors[0] && l.authors[0].name),
+                grupo: 'Domínio público',
+                subgrupo: 'Livro completo',
+                uploadDate: 'Project Gutenberg',
+                link: `https://www.gutenberg.org/ebooks/${l.id}`,
+                capa: (l.formats && l.formats['image/jpeg']) || '',
+                idioma: (l.languages && l.languages[0]) || '',
+                web: true,
+                fonteWeb: 'Project Gutenberg'
+            }));
+        }
+
+        async function buscarArchive(termo) {
+            const q = `title:(${termo}) AND mediatype:texts`;
+            const url = 'https://archive.org/advancedsearch.php'
+                + `?q=${encodeURIComponent(q)}`
+                + '&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=year&fl%5B%5D=language'
+                + '&rows=12&page=1&output=json';
+            const j = await pegarJSON(url);
+            const docs = j && j.response && j.response.docs;
+            if (!docs) return [];
+            return docs.map(d => ({
+                id: `web-archive-${d.identifier}`,
+                nome: d.title || d.identifier,
+                autor: limparAutor(Array.isArray(d.creator) ? d.creator[0] : d.creator),
+                grupo: 'Acervo comunitário',
+                subgrupo: 'Internet Archive',
+                uploadDate: d.year ? String(d.year) : 'Internet Archive',
+                link: `https://archive.org/details/${d.identifier}`,
+                capa: `https://archive.org/services/img/${d.identifier}`,
+                idioma: Array.isArray(d.language) ? d.language[0] : (d.language || ''),
+                web: true,
+                fonteWeb: 'Internet Archive'
+            }));
+        }
+
+        async function buscarWikisource(termo) {
+            const url = 'https://pt.wikisource.org/w/api.php?action=query&list=search&format=json&origin=*'
+                + `&srsearch=${encodeURIComponent(termo)}&srlimit=8`;
+            const j = await pegarJSON(url);
+            const hits = j && j.query && j.query.search;
+            if (!hits) return [];
+            return hits.map(h => ({
+                id: `web-wikisource-${h.pageid}`,
+                nome: h.title,
+                autor: 'Wikisource',
+                grupo: 'Texto livre',
+                subgrupo: 'Wikisource',
+                uploadDate: 'Voluntários',
+                link: `https://pt.wikisource.org/?curid=${h.pageid}`,
+                capa: '',
+                idioma: 'pt',
+                web: true,
+                fonteWeb: 'Wikisource'
+            }));
+        }
+
+        async function buscarOpenLibrary(termo) {
+            const campos = 'key,title,author_name,first_publish_year,cover_i,ia,public_scan_b';
+            const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(termo)}&limit=12&fields=${campos}`;
+            const j = await pegarJSON(url);
+            if (!j || !j.docs) return [];
+            return j.docs.map(d => {
+                const scan = d.public_scan_b && d.ia && d.ia[0];
+                return {
+                    id: `web-openlibrary-${String(d.key || '').replace(/\W/g, '')}`,
+                    nome: d.title || 'Sem título',
+                    autor: limparAutor(d.author_name && d.author_name[0]),
+                    grupo: scan ? 'Acervo comunitário' : 'Catálogo',
+                    subgrupo: scan ? 'Internet Archive' : 'Open Library',
+                    uploadDate: d.first_publish_year ? String(d.first_publish_year) : 'Open Library',
+                    link: scan ? `https://archive.org/details/${d.ia[0]}` : `https://openlibrary.org${d.key}`,
+                    capa: d.cover_i ? `https://covers.openlibrary.org/b/id/${d.cover_i}-M.jpg` : '',
+                    idioma: '',
+                    web: true,
+                    fonteWeb: scan ? 'Internet Archive' : 'Open Library'
+                };
+            });
+        }
+
+        async function buscarNaWeb(termo) {
+            if (!termo || termo.trim().length < 3) { webBooks = []; return; }
+            webBuscando = true;
+            renderBooks();
+
+            const partes = await Promise.all([
+                buscarGutenberg(termo).catch(() => []),
+                buscarArchive(termo).catch(() => []),
+                buscarWikisource(termo).catch(() => []),
+                buscarOpenLibrary(termo).catch(() => [])
+            ]);
+
+            /* O termo pode ter mudado enquanto isto voltava; resposta atrasada
+               de uma busca velha não pode sobrescrever a busca atual. */
+            if (normalizeString(termo) !== normalizeString(searchFilter)) return;
+
+            const vistos = new Set(books.map(b => normalizeString(b.nome)));
+            const juntos = [];
+            partes.forEach(lista => lista.forEach(l => {
+                const k = normalizeString(l.nome);
+                if (!k || vistos.has(k)) return;
+                vistos.add(k);
+                juntos.push(l);
+            }));
+
+            webBooks = juntos;
+            webBuscando = false;
+            applyFilters();
+        }
+
+        function agendarBuscaWeb() {
+            clearTimeout(webTimer);
+            const termo = searchFilter;
+            if (normalizeString(termo) === normalizeString(webUltimoTermo)) return;
+            webUltimoTermo = termo;
+            if (!termo || termo.trim().length < 3) {
+                webBooks = [];
+                webBuscando = false;
+                return;
+            }
+            /* Espera a pessoa parar de digitar: uma chamada por letra entupiria
+               os catálogos e ainda devolveria resultado de meia palavra. */
+            webTimer = setTimeout(() => buscarNaWeb(termo), 450);
+        }
+
         window.handleSearch = function() {
             searchFilter = document.getElementById('search-input').value;
             document.getElementById('clear-search-btn').classList.toggle('hidden', searchFilter === '');
-            showSuggestions(); 
+            showSuggestions();
+            agendarBuscaWeb();
             applyFilters();
         };
 
@@ -1609,6 +1790,10 @@
             searchFilter = '';
             document.getElementById('clear-search-btn').classList.add('hidden');
             document.getElementById('search-suggestions').classList.add('hidden');
+            clearTimeout(webTimer);
+            webBooks = [];
+            webBuscando = false;
+            webUltimoTermo = '';
             applyFilters();
         };
 
@@ -1682,6 +1867,15 @@
                 return matchSearch && matchCategory && matchSubgroup;
             });
 
+            /* O que veio da web entra DEPOIS do acervo próprio e só quando há
+               busca por texto — navegar por categoria é passear na estante da
+               casa, e misturar catálogo de fora ali só faria barulho.
+               Os filtros de categoria/subgrupo também não se aplicam: eles
+               falam da classificação daqui, que a web não usa. */
+            const webVisiveis = (searchTerms.length > 0 && categoryFilter === 'all' && selectedSubgroups.length === 0)
+                ? webBooks
+                : [];
+
             // APPLY ADVANCED SORTING (A-Z, Z-A, Newest)
             if (sortBy === 'az') {
                 filteredBooks.sort((a, b) => a.nome.localeCompare(b.nome));
@@ -1694,6 +1888,11 @@
                     return dateB.localeCompare(dateA);
                 });
             }
+
+            /* A ordenação vale para o acervo da casa; os resultados da web
+               mantêm a ordem em que os catálogos devolveram, que é a ordem de
+               relevância deles. */
+            filteredBooks = filteredBooks.concat(webVisiveis);
 
             renderBooks();
         }
@@ -1720,21 +1919,35 @@
             grid.innerHTML = '';
             
             const currentLang = userProfile.lang || 'pt';
+            const daWeb = filteredBooks.filter(b => b.web).length;
+            const daCasa = filteredBooks.length - daWeb;
             let labelText = '';
             if (currentLang === 'en') {
-                labelText = `Showing ${filteredBooks.length} of ${books.length} items`;
+                labelText = `Showing ${daCasa} of ${books.length} items`;
+                if (daWeb) labelText += ` + ${daWeb} from open catalogs`;
+                if (webBuscando) labelText += ' • searching the web…';
             } else if (currentLang === 'es') {
-                labelText = `Mostrando ${filteredBooks.length} de ${books.length} ítems`;
+                labelText = `Mostrando ${daCasa} de ${books.length} ítems`;
+                if (daWeb) labelText += ` + ${daWeb} de catálogos abiertos`;
+                if (webBuscando) labelText += ' • buscando en la web…';
             } else {
-                labelText = `Mostrando ${filteredBooks.length} de ${books.length} livros`;
+                labelText = `Mostrando ${daCasa} de ${books.length} livros`;
+                if (daWeb) labelText += ` + ${daWeb} de catálogos abertos`;
+                if (webBuscando) labelText += ' • procurando na web…';
             }
             if (countLabel) {
                 countLabel.textContent = labelText;
             }
 
+            /* Enquanto a web não respondeu, "nada encontrado" seria mentira: a
+               busca ainda está acontecendo. */
             if (filteredBooks.length === 0) {
-                if (emptyState) emptyState.classList.remove('hidden');
-                grid.classList.add('hidden');
+                if (emptyState) emptyState.classList.toggle('hidden', webBuscando);
+                grid.classList.toggle('hidden', !webBuscando);
+                if (webBuscando) {
+                    grid.innerHTML = '<div class="col-span-full text-center py-10 text-slate-400 text-xs">'
+                        + '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Procurando em catálogos abertos…</div>';
+                }
                 return;
             }
 
@@ -1761,10 +1974,15 @@
                     <div class="flex-grow flex flex-col justify-between min-w-0">
                         <div class="min-w-0">
                             <div class="flex items-center justify-between gap-1 mb-1">
-                                <span class="bg-moss-50 text-moss-700 text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider truncate max-w-[75%]">${book.grupo} • ${book.subgrupo}</span>
-                                <button onclick="event.stopPropagation(); window.toggleFavorite('${book.id}')" class="text-slate-300 hover:text-amber-500 transition-all p-1 -mr-1" title="Favoritar">
+                                <span class="${book.web ? 'bg-sky-50 text-sky-700' : 'bg-moss-50 text-moss-700'} text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider truncate max-w-[75%]">${book.grupo} • ${book.subgrupo}</span>
+                                ${book.web
+                                    /* Favoritar guarda só o id e resolve no acervo da casa; um
+                                       favorito da web sumiria no próximo carregamento. Melhor
+                                       não oferecer do que oferecer quebrado. */
+                                    ? `<span class="text-sky-400 p-1 -mr-1" title="Veio de ${book.fonteWeb}"><i class="fa-solid fa-globe text-xs"></i></span>`
+                                    : `<button onclick="event.stopPropagation(); window.toggleFavorite('${book.id}')" class="text-slate-300 hover:text-amber-500 transition-all p-1 -mr-1" title="Favoritar">
                                     <i class="${isFav ? 'fa-solid text-amber-500' : 'fa-regular'} fa-star text-xs"></i>
-                                </button>
+                                </button>`}
                             </div>
                             <h4 onclick="window.openBookModal('${book.id}')" class="font-bold text-navy-900 group-hover:text-moss-600 transition-all text-xs sm:text-sm line-clamp-2 leading-snug mb-0.5" title="${book.nome}">${book.nome}</h4>
                             <p class="text-[10px] text-slate-400 font-medium truncate">Por ${book.autor}</p>
@@ -2094,7 +2312,11 @@
         };
 
         window.openBookModal = function(id) {
-            const book = books.find(b => b.id.toString() === id.toString());
+            /* Procura nos dois lugares: o acervo da casa e o que a busca
+               trouxe da web. Sem isto, clicar num resultado da web não abriria
+               nada — e é justamente o resultado que a pessoa foi procurar. */
+            const book = books.find(b => b.id.toString() === id.toString())
+                || webBooks.find(b => b.id.toString() === id.toString());
             if (!book) return;
 
             currentSelectedBook = book;
