@@ -1641,19 +1641,22 @@
            ═══════════════════════════════════════════════════════════════════ */
 
         let webBooks = [];
+        let webFalhas = [];
         let webBuscando = false;
         let webTimer = null;
         let webUltimoTermo = '';
 
+        /* Levanta erro em vez de devolver null: quem chama precisa distinguir
+           "o catálogo respondeu e não tinha nada" de "o catálogo não
+           respondeu". Engolir a falha aqui faz as duas coisas virarem a mesma
+           tela vazia — e só uma delas é problema nosso. */
         async function pegarJSON(url, ms = 12000) {
             const corta = new AbortController();
             const t = setTimeout(() => corta.abort(), ms);
             try {
                 const r = await fetch(url, { signal: corta.signal });
-                if (!r.ok) return null;
+                if (!r.ok) throw new Error('HTTP ' + r.status);
                 return await r.json();
-            } catch (e) {
-                return null;
             } finally {
                 clearTimeout(t);
             }
@@ -1758,18 +1761,36 @@
         async function buscarNaWeb(termo) {
             if (!termo || termo.trim().length < 3) { webBooks = []; return; }
             webBuscando = true;
+            webFalhas = [];
             renderBooks();
 
-            const partes = await Promise.all([
-                buscarGutenberg(termo).catch(() => []),
-                buscarArchive(termo).catch(() => []),
-                buscarWikisource(termo).catch(() => []),
-                buscarOpenLibrary(termo).catch(() => [])
-            ]);
+            /* Cada fonte é embrulhada para que a falha dela vire um DADO, e não
+               um silêncio: sem isto, "não achei nada" e "o catálogo está fora
+               do ar" viram a mesma tela — e só a segunda é defeito. */
+            const fontes = [
+                ['Project Gutenberg', buscarGutenberg],
+                ['Internet Archive', buscarArchive],
+                ['Wikisource', buscarWikisource],
+                ['Open Library', buscarOpenLibrary]
+            ];
+            const partes = await Promise.all(fontes.map(async ([nomeFonte, buscar]) => {
+                try {
+                    return await buscar(termo);
+                } catch (e) {
+                    webFalhas.push(nomeFonte);
+                    console.warn('[BibliOpen] ' + nomeFonte + ' não respondeu:', (e && e.message) || e);
+                    return [];
+                }
+            }));
 
             /* O termo pode ter mudado enquanto isto voltava; resposta atrasada
-               de uma busca velha não pode sobrescrever a busca atual. */
-            if (normalizeString(termo) !== normalizeString(searchFilter)) return;
+               de uma busca velha não pode sobrescrever a busca atual.
+               Desligar o "procurando" ANTES de sair é obrigatório: sem isso a
+               tela fica presa no spinner e nunca mostra resultado nenhum. */
+            if (normalizeString(termo) !== normalizeString(searchFilter)) {
+                webBuscando = false;
+                return;
+            }
 
             const vistos = new Set(books.map(b => normalizeString(b.nome)));
             const juntos = [];
@@ -1784,6 +1805,15 @@
             webBuscando = false;
             applyFilters();
         }
+
+        /* Repetir a busca depois de uma falha. Precisa zerar `webUltimoTermo`,
+           senão o atalho que evita buscar duas vezes o mesmo termo faria o
+           botão não fazer nada — que é o pior tipo de botão. */
+        window.tentarDeNovo = function() {
+            webUltimoTermo = '';
+            webFalhas = [];
+            agendarBuscaWeb();
+        };
 
         function agendarBuscaWeb() {
             clearTimeout(webTimer);
@@ -1815,6 +1845,7 @@
             document.getElementById('search-suggestions').classList.add('hidden');
             clearTimeout(webTimer);
             webBooks = [];
+            webFalhas = [];
             webBuscando = false;
             webUltimoTermo = '';
             applyFilters();
@@ -1958,6 +1989,11 @@
                 if (daWeb) labelText += ` + ${daWeb} de catálogos abertos`;
                 if (webBuscando) labelText += ' • procurando na web…';
             }
+            // Falha parcial precisa aparecer: com um catálogo fora do ar a
+            // lista fica menor sem motivo visível, e isso parece acervo pobre.
+            if (!webBuscando && webFalhas.length && webFalhas.length < 4) {
+                labelText += ` • sem resposta de ${webFalhas.join(', ')}`;
+            }
             if (countLabel) {
                 countLabel.textContent = labelText;
             }
@@ -1965,11 +2001,25 @@
             /* Enquanto a web não respondeu, "nada encontrado" seria mentira: a
                busca ainda está acontecendo. */
             if (filteredBooks.length === 0) {
-                if (emptyState) emptyState.classList.toggle('hidden', webBuscando);
-                grid.classList.toggle('hidden', !webBuscando);
+                // Se TODOS os catálogos falharam, o problema não é a palavra que
+                // a pessoa digitou — é a conexão. Dizer "nada encontrado" aqui
+                // manda ela procurar defeito no lugar errado.
+                const mostrarErro = normalizeString(searchFilter).length > 0 && !webBuscando && webFalhas.length === 4;
+
+                if (emptyState) emptyState.classList.toggle('hidden', webBuscando || mostrarErro);
+                grid.classList.toggle('hidden', !(webBuscando || mostrarErro));
+
                 if (webBuscando) {
                     grid.innerHTML = '<div class="col-span-full text-center py-10 text-slate-400 text-xs">'
                         + '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Procurando em catálogos abertos…</div>';
+                } else if (mostrarErro) {
+                    grid.innerHTML = '<div class="col-span-full text-center py-10 px-4">'
+                        + '<i class="fa-solid fa-plug-circle-xmark text-3xl text-slate-300 mb-3"></i>'
+                        + '<p class="text-sm font-bold text-navy-900">Não consegui falar com os catálogos</p>'
+                        + '<p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">Nenhuma das quatro fontes respondeu. '
+                        + 'Costuma ser conexão ou bloqueio de rede. O detalhe do erro fica no console do navegador.</p>'
+                        + '<button onclick="window.tentarDeNovo()" class="mt-4 bg-navy-900 hover:bg-moss-600 text-white text-xs font-bold px-4 py-2 rounded-lg">'
+                        + '<i class="fa-solid fa-rotate-right mr-1.5"></i>Tentar de novo</button></div>';
                 }
                 return;
             }
@@ -2529,8 +2579,25 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('BibliOpen pronto para instalação offline!', reg))
+                    .then(reg => {
+                        console.log('BibliOpen pronto para instalação offline!', reg);
+                        // Procura versão nova na hora. Sem isto, quem já usou o
+                        // site pode ficar semanas com um service worker velho —
+                        // e o antigo interceptava TODAS as requisições, inclusive
+                        // as dos catálogos, o que quebra a busca de um jeito que
+                        // não aparece em lugar nenhum.
+                        reg.update().catch(() => {});
+                    })
                     .catch(err => console.error('Falha ao registrar instalador do PWA:', err));
+
+                // Quando um service worker novo assume, a página em tela ainda é
+                // a que o antigo serviu. Recarregar UMA vez põe as duas em dia.
+                let jaRecarregou = false;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (jaRecarregou) return;
+                    jaRecarregou = true;
+                    window.location.reload();
+                });
             });
         }
     </script>

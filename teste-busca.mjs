@@ -112,6 +112,57 @@ await pag.waitForTimeout(500);
 const depois = await pag.$$eval('#books-grid > div', ns => ns.length);
 ok(depois === 0, 'limpar a busca apaga os resultados da web');
 
+
+// ── falha total: os quatro catálogos fora do ar ──────────────────────────
+await pag.evaluate(() => { window.__derrubarTudo = true; });
+await pag.unroute('**/*');
+await pag.route('**/*', (rota) => {
+  const u = rota.request().url();
+  if (u.startsWith('http://localhost:8899')) return rota.continue();
+  if (u.includes('cdn.tailwindcss.com')) return rota.fulfill(js('window.tailwind={config:{}};'));
+  if (u.includes('firebase-app.js')) return rota.fulfill(js(FB_APP));
+  if (u.includes('firebase-auth.js')) return rota.fulfill(js(FB_AUTH));
+  if (u.includes('firebase-firestore.js')) return rota.fulfill(js(FB_FS));
+  if (u.includes('cdnjs.cloudflare.com') || u.includes('fonts.googleapis.com')) {
+    return rota.fulfill({ contentType: 'text/css', body: '' });
+  }
+  return rota.abort(); // tudo mais cai
+});
+
+await pag.fill('#search-input', 'moby dick');
+await pag.waitForTimeout(4000);
+const painel = await pag.$eval('#books-grid', n => n.innerText.replace(/\s+/g,' ').trim()).catch(() => '');
+const gridVisivel = await pag.$eval('#books-grid', n => !n.classList.contains('hidden'));
+const vazioEscondido = await pag.$eval('#empty-state', n => n.classList.contains('hidden')).catch(() => true);
+
+ok(/Não consegui falar com os catálogos/i.test(painel), 'com tudo fora do ar, avisa que é conexão — não "nada encontrado"');
+ok(gridVisivel, 'o painel de erro fica visível');
+ok(vazioEscondido, 'o "nada encontrado" fica escondido (seria diagnóstico errado)');
+ok(/Tentar de novo/i.test(painel), 'oferece tentar de novo');
+
+// O botão precisa realmente refazer a busca.
+let refez = false;
+await pag.unroute('**/*');
+await pag.route('**/*', (rota) => {
+  const u = rota.request().url();
+  if (u.startsWith('http://localhost:8899')) return rota.continue();
+  if (u.includes('gutendex.com')) { refez = true; return rota.fulfill(json({ results: [{
+    id: 15, title: 'Moby Dick', authors: [{ name: 'Melville, Herman' }], languages: ['en'], copyright: false,
+    formats: { 'text/plain; charset=us-ascii': 'https://g/15.txt' } }] })); }
+  if (u.includes('cdn.tailwindcss.com')) return rota.fulfill(js('window.tailwind={config:{}};'));
+  if (u.includes('cdnjs.cloudflare.com') || u.includes('fonts.googleapis.com')) return rota.fulfill({ contentType: 'text/css', body: '' });
+  return rota.abort();
+});
+await pag.click('#books-grid button');
+await pag.waitForTimeout(3500);
+const depoisRetry = await pag.$eval('#books-grid', n => n.innerText).catch(() => '');
+ok(refez, 'o botao "tentar de novo" realmente refaz a busca');
+ok(/Moby Dick/i.test(depoisRetry), 'depois do retry o resultado aparece');
+
+// Falha PARCIAL tem que aparecer no rotulo.
+const rotuloParcial = await pag.$eval('#books-count-label', n => n.textContent);
+ok(/sem resposta de/i.test(rotuloParcial), 'falha parcial aparece no rotulo (' + rotuloParcial.slice(0,90) + ')');
+
 await nav.close(); servidor.close();
 console.log(falhas ? `\n${falhas} FALHA(S)` : '\ntudo passou');
 process.exit(falhas ? 1 : 0);
