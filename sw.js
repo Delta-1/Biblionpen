@@ -1,4 +1,4 @@
-const CACHE_NAME = 'biblionmed-v1';
+const CACHE_NAME = 'bibliopen-v1';
 
 // Ativa o Service Worker imediatamente
 self.addEventListener('install', (event) => {
