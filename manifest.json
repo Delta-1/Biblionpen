@@ -1,7 +1,7 @@
 {
-  "short_name": "BibliOpen",
-  "name": "BibliOpen — Biblioteca aberta",
-  "description": "Biblioteca aberta e gratuita, de tudo quanto é livro — com busca ao vivo em catálogos abertos.",
+  "short_name": "Bibli.on.med",
+  "name": "Bibli.on.med - Biblioteca Aberta de Medicina",
+  "description": "Biblioteca aberta, gratuita e revisada de medicina para estudantes.",
   "icons": [
     {
       "src": "assets/icon-192x192.png",

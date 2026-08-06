@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BibliOpen — Biblioteca aberta, de tudo quanto é livro</title>
+    <title>Bibli.on.med - Biblioteca Aberta de Medicina</title>
     <!-- Vinculação do Manifesto PWA (Para ativar a instalação com foto) -->
     <link rel="manifest" href="manifest.json">
     <!-- Favicon do Site -->
@@ -18,13 +18,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            /* Papel, não tela de aplicativo. */
-            background-color: #FAF8F5;
-        }
-        /* Títulos com serifa: numa biblioteca, o nome da obra é o que importa,
-           e serifa lê melhor em texto longo do que a fonte da interface. */
-        .titulo-obra {
-            font-family: 'Georgia', 'Times New Roman', serif;
+            background-color: #F8FAFC;
         }
         /* Custom scrollbar para visual minimalista */
         ::-webkit-scrollbar {
@@ -39,7 +33,7 @@
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #8C2F4A;
+            background: #4E6E58;
         }
         /* Custom animations */
         @keyframes pulse-green {
@@ -72,26 +66,20 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    /* PALETA — sala de leitura, não consultório.
-                       O verde clínico servia quando isto era só medicina. Um
-                       acervo de tudo pede outra coisa: papel quente, tinta
-                       escura e um acento de encadernação.
-                       Os NOMES continuam navy/moss só para não reescrever 125
-                       classes espalhadas; o que mudou foram os valores. */
                     colors: {
                         navy: {
-                            50:  '#F7F5FA',
-                            100: '#DCD6E4',
-                            800: '#251E33',
-                            900: '#171320', /* tinta */
+                            50: '#F0F4F8',
+                            100: '#D9E2EC',
+                            800: '#102A43',
+                            900: '#0B132B', /* Azul escuro premium */
                         },
                         moss: {
-                            50:  '#FBF1F4',
-                            100: '#F3DEE5',
-                            500: '#A63D5B', /* encadernação */
-                            600: '#8C2F4A', /* botões: contraste alto com branco */
-                            700: '#6E2439',
-                            800: '#511B2A',
+                            50: '#F4F7F5',
+                            100: '#E1EBE4',
+                            500: '#5F8569', /* Verde Musgo Base */
+                            600: '#4E6E58', /* Verde Musgo Médio */
+                            700: '#3D5745', /* Verde Musgo Escuro */
+                            800: '#2C3E31',
                         }
                     }
                 }
@@ -107,9 +95,9 @@
             <!-- Logo -->
             <div class="flex items-center gap-2 cursor-pointer" onclick="switchTab('search')">
                 <div class="bg-moss-600 p-2 rounded-lg text-white flex items-center justify-center">
-                    <i class="fa-solid fa-book-open-reader text-lg"></i>
+                    <i class="fa-solid fa-book-medical text-lg"></i>
                 </div>
-                <span class="font-extrabold text-xl tracking-tight">Bibli<span class="text-moss-500">Open</span></span>
+                <span class="font-extrabold text-xl tracking-tight">Bibli<span class="text-moss-500">.on.</span>med</span>
             </div>
 
             <!-- Nav Links Desktop -->
@@ -164,12 +152,12 @@
         <section id="tab-search" class="tab-content flex flex-col items-center justify-center min-h-[60vh] py-10 tab-animate-active">
             <!-- Brand Intro -->
             <div class="text-center mb-8 max-w-xl flex flex-col justify-center items-center">
-                <h1 class="titulo-obra text-5xl sm:text-6xl font-bold text-navy-900 tracking-tight mb-3">
-                    Bibli<span class="text-moss-600">Open</span>
+                <h1 class="text-4xl sm:text-5xl font-black text-navy-900 tracking-tight mb-3">
+                    Bibli<span class="text-moss-600">.on.</span>med
                 </h1>
                 <!-- Dynamic rotating message subtitle container -->
                 <p id="dynamic-subtitle" class="text-slate-500 text-xs sm:text-sm font-medium transition-all duration-500 opacity-100 mb-3" data-i18n="mainSubtitle">
-                    Literatura, história, ciência, infantil — tudo de graça, com busca ao vivo em catálogos abertos.
+                    A maior biblioteca de medicina gratuita, revisada e livre de vírus para estudantes da América Latina.
                 </p>
                 <!-- Data Source Status Label (Centered, Elegant Placement) -->
                 <div id="data-source-label" class="text-[9px] sm:text-[10px] bg-slate-100 border border-slate-200/50 text-slate-500 font-bold px-3 py-1 rounded-full flex items-center justify-center gap-1.5 transition-all">
@@ -184,7 +172,7 @@
                         <div class="pl-4 text-slate-400">
                             <i class="fa-solid fa-magnifying-glass text-lg"></i>
                         </div>
-                        <input type="text" id="search-input" oninput="handleSearch()" onfocus="showSuggestions()" autocomplete="off" data-i18n-placeholder="searchPlaceholder" placeholder="Busque por título, autor ou assunto — Machado, Shakespeare, anatomia…" class="w-full pl-3 pr-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none text-base sm:text-lg">
+                        <input type="text" id="search-input" oninput="handleSearch()" onfocus="showSuggestions()" autocomplete="off" data-i18n-placeholder="searchPlaceholder" placeholder="Pesquise por anatomia, autor, Robbins, Guyton, cirurgia..." class="w-full pl-3 pr-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none text-base sm:text-lg">
                         <button onclick="clearSearch()" id="clear-search-btn" class="hidden pr-3 text-slate-400 hover:text-slate-600">
                             <i class="fa-solid fa-circle-xmark"></i>
                         </button>
@@ -194,17 +182,6 @@
                 <!-- Autocomplete suggestions dropdown container -->
                 <div id="search-suggestions" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl border border-slate-100 shadow-xl max-h-60 overflow-y-auto z-50 p-2 animate-[fadeIn_0.15s_ease-out]">
                     <!-- Populated dynamically by JS -->
-                </div>
-
-                <!-- Onde a busca procura. Fica logo abaixo do campo porque é a
-                     resposta para "isso aqui só tem o que vocês subiram?" —
-                     e a resposta é não. -->
-                <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 mt-4 text-[10px] text-slate-400 font-medium">
-                    <span class="text-slate-500 font-semibold">Procura também em</span>
-                    <span class="flex items-center gap-1"><i class="fa-solid fa-feather text-moss-500"></i> Project Gutenberg</span>
-                    <span class="flex items-center gap-1"><i class="fa-solid fa-box-archive text-moss-500"></i> Internet Archive</span>
-                    <span class="flex items-center gap-1"><i class="fa-solid fa-w text-moss-500"></i> Wikisource</span>
-                    <span class="flex items-center gap-1"><i class="fa-solid fa-book text-moss-500"></i> Open Library</span>
                 </div>
             </div>
 
@@ -289,23 +266,23 @@
                         <i class="fa-solid fa-heart-pulse"></i>
                     </span>
                     <div>
-                        <h2 class="text-2xl font-bold text-navy-900" data-i18n="aboutTitle">O Foco da BibliOpen</h2>
+                        <h2 class="text-2xl font-bold text-navy-900" data-i18n="aboutTitle">O Foco da Bibli.on.med</h2>
                         <p class="text-xs text-moss-600 font-semibold uppercase tracking-wider" data-i18n="aboutSub">Apoio Acadêmico Sem Fins Lucrativos</p>
                     </div>
                 </div>
 
                 <div class="space-y-6 text-slate-600 leading-relaxed text-sm sm:text-base">
                     <p data-i18n="aboutP1">
-                        Livro bom costuma ser caro, e o que é livre está espalhado por dezenas de acervos que ninguém conhece. O BibliOpen junta tudo num lugar só: domínio público, acervo comunitário e obras de acesso aberto, de literatura a medicina.
+                        A rotina de um estudante de medicina na América Latina é repleta de desafios. Além da carga horária exaustiva, o custo de livros técnicos e manuais clínicos de referência internacional pode ser proibitivo para a maioria dos futuros médicos.
                     </p>
                     <p class="font-semibold text-navy-900" data-i18n="aboutP2">
-                        O objetivo do BibliOpen é simplificar a busca e abrir o acesso ao conhecimento de todo tipo. 
+                        O objetivo da Bibli.on.med é simplificar a busca e democratizar o acesso ao conhecimento médico de qualidade. 
                     </p>
 
                     <div class="border-l-4 border-moss-500 pl-4 my-6 bg-moss-50/50 py-3 rounded-r-xl">
-                        <h4 class="font-bold text-navy-900 text-sm mb-1" data-i18n="aboutShieldTitle">🛡️ De onde vem cada livro</h4>
+                        <h4 class="font-bold text-navy-900 text-sm mb-1" data-i18n="aboutShieldTitle">🛡️ Compromisso com a Segurança Biológica (e Digital!)</h4>
                         <p class="text-xs sm:text-sm text-slate-500" data-i18n="aboutShieldDesc">
-                            Cada resultado diz a sua origem: domínio público, acervo comunitário ou catálogo aberto. Quando a obra é de outra biblioteca, o BibliOpen faz a ponte e o link leva direto à fonte, que é quem tem o direito de distribuir.
+                            Todos os links de download disponibilizados no acervo são previamente verificados. Garantimos que os arquivos hospedados estejam livres de vírus, scripts maliciosos ou propagandas abusivas. Focamos apenas no PDF limpo!
                         </p>
                     </div>
 
@@ -332,7 +309,7 @@
                         <div class="flex-grow text-center md:text-left">
                             <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider mb-2 inline-block" data-i18n="waBadge">Comunidade Ativa</span>
                             <h4 class="font-extrabold text-navy-900 text-lg mb-1" data-i18n="waTitle">Participe do nosso Grupo de WhatsApp!</h4>
-                            <p class="text-xs text-slate-500" data-i18n="waDesc">Tire dúvidas, peça um título que faltou e compartilhe o que você encontrou de bom.</p>
+                            <p class="text-xs text-slate-500" data-i18n="waDesc">Esclareça dúvidas, faça pedidos diretamente, e compartilhe novos livros e resumos com estudantes de medicina de toda a América Latina.</p>
                         </div>
                         <a href="https://chat.whatsapp.com/GcjCjxItg5mIoDQLhigc1G" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-emerald-200 transition-all flex items-center justify-center gap-2 whitespace-nowrap text-sm shrink-0">
                             <i class="fa-brands fa-whatsapp text-lg"></i> <span data-i18n="waBtn">Entrar no Grupo do WhatsApp</span>
@@ -360,7 +337,7 @@
                     </div>
 
                     <div class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-xs text-slate-400" data-i18n="aboutFooterText">BibliOpen v2.5 — Criado com ❤️ para salvar vidas.</span>
+                        <span class="text-xs text-slate-400" data-i18n="aboutFooterText">Bibli.on.med v2.5 — Criado com ❤️ para salvar vidas.</span>
                         <button onclick="switchTab('search')" class="bg-moss-600 text-white font-semibold text-xs px-4 py-2 rounded-xl hover:bg-moss-700 transition-all shadow-md shadow-moss-100" data-i18n="aboutFooterBtn">
                             Iniciar Busca Agora
                         </button>
@@ -591,12 +568,12 @@
     <footer class="bg-navy-900 text-slate-400 py-8 border-t border-navy-800 mt-auto text-xs sm:text-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-2">
-                <span class="font-extrabold text-white text-lg tracking-tight">Bibli<span class="text-moss-500">Open</span></span>
+                <span class="font-extrabold text-white text-lg tracking-tight">Bibli<span class="text-moss-500">.on.</span>med</span>
                 <span class="text-slate-600">|</span>
-                <span data-i18n="footerBrandSub">Biblioteca aberta, de tudo quanto é livro</span>
+                <span data-i18n="footerBrandSub">Biblioteca Aberta de Medicina</span>
             </div>
             <p class="text-center md:text-right" data-i18n="footerCopy">
-                © 2026 BibliOpen. Desenvolvido para facilitar o acesso à saúde e educação médica na América Latina.
+                © 2026 Bibli.on.med. Desenvolvido para facilitar o acesso à saúde e educação médica na América Latina.
             </p>
         </div>
     </footer>
@@ -778,18 +755,18 @@
                 mobAbout: "Sobre",
                 mobSuggest: "Contribuir",
                 mobConfigs: "Configs",
-                searchPlaceholder: "Busque por título, autor ou assunto — Machado, Shakespeare, anatomia…",
+                searchPlaceholder: "Pesquise por anatomia, autor, Robbins, Guyton, cirurgia...",
                 catAll: "Todos os Livros",
                 loadingAcervo: "Carregando acervo...",
                 syncingSheet: "Sincronizando...",
                 emptyStateTitle: "Nenhum livro encontrado",
                 emptyStateSub: "Não encontramos correspondências com sua busca na planilha.",
-                aboutTitle: "O Foco da BibliOpen",
+                aboutTitle: "O Foco da Bibli.on.med",
                 aboutSub: "Apoio Acadêmico Sem Fins Lucrativos",
-                aboutP1: "Livro bom costuma ser caro, e o que é livre está espalhado por dezenas de acervos que ninguém conhece. O BibliOpen junta tudo num lugar só: domínio público, acervo comunitário e obras de acesso aberto, de literatura a medicina.",
-                aboutP2: "O objetivo do BibliOpen é simplificar a busca e abrir o acesso ao conhecimento de todo tipo.",
-                aboutShieldTitle: "🛡️ De onde vem cada livro",
-                aboutShieldDesc: "Cada resultado diz a sua origem: domínio público, acervo comunitário ou catálogo aberto. Quando a obra é de outra biblioteca, o BibliOpen faz a ponte e o link leva direto à fonte, que é quem tem o direito de distribuir.",
+                aboutP1: "A rotina de um estudante de medicina na América Latina é repleta de desafios. Além da carga horária exaustiva, o custo de livros técnicos e manuais clínicos de referência internacional pode ser proibitivo para a maioria dos futuros médicos.",
+                aboutP2: "O objetivo da Bibli.on.med é simplificar a busca e democratizar o acesso ao conhecimento médico de qualidade.",
+                aboutShieldTitle: "🛡️ Compromisso com a Segurança Biológica (e Digital!)",
+                aboutShieldDesc: "Todos os links de download disponibilizados no acervo são previamente verificados. Garantimos que os arquivos hospedados estejam livres de vírus, scripts maliciosos ou propagandas abusivas. Focamos apenas no PDF limpo!",
                 howItWorks: "Como funciona o acervo?",
                 howStep1Title: "Curadoria Especializada:",
                 howStep1Desc: "Livros divididos pelas cadeiras clássicas de medicina (Anatomia, Fisiologia, Patologia, etc.).",
@@ -799,9 +776,9 @@
                 howStep3Desc: "O catálogo é alimentado por uma planilha na nuvem gerenciada ativamente por nós.",
                 waBadge: "Comunidade Ativa",
                 waTitle: "Participe do nosso Grupo de WhatsApp!",
-                waDesc: "Tire dúvidas, peça um título que faltou e compartilhe o que você encontrou de bom.",
+                waDesc: "Esclareça dúvidas, faça pedidos diretamente, e compartilhe novos livros e resumos com estudantes de medicina de toda a América Latina.",
                 waBtn: "Entrar no Grupo do WhatsApp",
-                aboutFooterText: "BibliOpen v2.5 — Criado com ❤️ para salvar vidas.",
+                aboutFooterText: "Bibli.on.med v2.5 — Criado com ❤️ para salvar vidas.",
                 aboutFooterBtn: "Iniciar Busca Agora",
                 contribTitle: "Contribuir com o Acervo Médico",
                 contribSub: "Ajude outros estudantes enviando livros ou links úteis de forma rápida e segura!",
@@ -839,7 +816,7 @@
                 adminCsvLabel: "Add Spreadsheet URL (.csv)",
                 adminRestoreBtn: "Restore Default Official Sheet",
                 footerBrandSub: "Open Medical Library",
-                footerCopy: "© 2026 BibliOpen. Developed to facilitate access to healthcare and medical education in Latin America.",
+                footerCopy: "© 2026 Bibli.on.med. Developed to facilitate access to healthcare and medical education in Latin America.",
                 modalSafeAccent: "Arquivo Seguro Antivírus",
                 modalSafeLabel: "Análise Antivírus:",
                 modalSafeVal: "Seguro e Limpo",
@@ -879,30 +856,30 @@
                 mobAbout: "Sobre",
                 mobSuggest: "Contribuir",
                 mobConfigs: "Configs",
-                searchPlaceholder: "Busque por título, autor o tema — Cervantes, Shakespeare, anatomía…",
+                searchPlaceholder: "Busque por anatomía, autor, Robbins, Guyton, cirugía...",
                 catAll: "Todos os Livros",
                 loadingAcervo: "Cargando biblioteca...",
                 syncingSheet: "Sincronizando...",
                 emptyStateTitle: "No se encontraron libros",
                 emptyStateSub: "No encontramos coincidencias con su búsqueda en la planilla.",
-                aboutTitle: "El Enfoque de BibliOpen",
+                aboutTitle: "El Enfoque de Bibli.on.med",
                 aboutSub: "Apoyo Académico Sin Fines de Lucro",
-                aboutP1: "Un buen libro suele ser caro, y lo que es libre está repartido por decenas de acervos que nadie conoce. BibliOpen lo reúne en un solo lugar: dominio público, acervo comunitario y obras de acceso abierto, de literatura a medicina.",
-                aboutP2: "El objetivo de BibliOpen es simplificar la búsqueda y abrir el acceso al conocimiento de todo tipo.",
-                aboutShieldTitle: "🛡️ De dónde viene cada libro",
+                aboutP1: "La rutina de un estudiante de medicina en América Latina está llena de desafíos. Além de el horario de clases agotador, el costo de los libros técnicos y manuales clínicos de referencia internacional puede ser prohibitivo para la mayoría de los futuros médicos.",
+                aboutP2: "El objetivo de Bibli.on.med es simplificar la búsqueda y democratizar el acceso al conocimiento médico de calidad.",
+                aboutShieldTitle: "🛡️ Compromiso con la Seguridad Biológica (¡y Digital!)",
                 aboutShieldDesc: "Todos los enlaces de descarga disponibles en la biblioteca están previamente verificados. Garantizamos que los archivos estén libres de virus, scripts maliciosos o anuncios abusivos. ¡Nos enfocamos solo en el PDF limpio!",
                 howItWorks: "¿Cómo funciona la biblioteca?",
                 howStep1Title: "Curaduría Especializada:",
-                howStep1Desc: "Libros organizados por área y materia — literatura, historia, ciencias, salud y más.",
+                howStep1Desc: "Libros divididos por las asignaturas clásicas de medicina (Anatómia, Fisiología, Patología, etc.).",
                 howStep2Title: "Enlaces Directos:",
                 howStep2Desc: "Sin molestos acortadores de enlaces, direccionamiento directo a servidores de alta velocidad (MediaFire/Google Drive).",
                 howStep3Title: "Actualización Dinámica:",
                 howStep3Desc: "El catálogo se alimenta de una planilla en la nube gestionada activamente por nosotros.",
                 waBadge: "Comunidad Activa",
                 waTitle: "¡Únete a nuestro Grupo de WhatsApp!",
-                waDesc: "Resuelve dudas, pide un título que falte y comparte lo que encontraste.",
+                waDesc: "Aclara dudas, realiza pedidos directamente y comparte nuevos libros y resúmenes con estudiantes de medicina de toda Latina.",
                 waBtn: "Entrar al Grupo de WhatsApp",
-                aboutFooterText: "BibliOpen v2.5 — Creado con ❤️ para salvar vidas.",
+                aboutFooterText: "Bibli.on.med v2.5 — Creado con ❤️ para salvar vidas.",
                 aboutFooterBtn: "Iniciar Búsqueda Ahora",
                 contribTitle: "Contribuir con la Biblioteca Médica",
                 contribSub: "¡Ayuda a otros estudiantes enviando libros o enlaces útiles de forma rápida y segura!",
@@ -940,7 +917,7 @@
                 adminCsvLabel: "Agregar URL de Planilla (.csv)",
                 adminRestoreBtn: "Restaurar Planilla Oficial",
                 footerBrandSub: "Biblioteca Abierta de Medicina",
-                footerCopy: "© 2026 BibliOpen. Desarrollado para facilitar el acceso a la salud y educación médica en América Latina.",
+                footerCopy: "© 2026 Bibli.on.med. Desarrollado para facilitar el acceso a la salud y educación médica en América Latina.",
                 modalSafeAccent: "Archivo Seguro Antivírus",
                 modalSafeLabel: "Análisis Antivirus:",
                 modalSafeVal: "Seguro e Limpio",
@@ -980,16 +957,16 @@
                 mobAbout: "About",
                 mobSuggest: "Contribute",
                 mobConfigs: "Configs",
-                searchPlaceholder: "Search by title, author or subject — Austen, Shakespeare, anatomy…",
+                searchPlaceholder: "Search by anatomy, author, Robbins, Guyton, surgery...",
                 catAll: "All Books",
                 loadingAcervo: "Loading collection...",
                 syncingSheet: "Syncing...",
                 emptyStateTitle: "No books found",
-                emptyStateSub: "Nothing matched — try another spelling, or the author's name.",
-                aboutTitle: "The Focus of BibliOpen",
+                emptyStateSub: "We did not find any matches for your search in the spreadsheet.",
+                aboutTitle: "The Focus of Bibli.on.med",
                 aboutSub: "Nonprofit Academic Support",
                 aboutP1: "The routine of a medical student in Latin America is full of challenges. In addition to the exhaustive class hours, the cost of technical books and international reference clinical manuals can be prohibitive for most future doctors.",
-                aboutP2: "The goal of BibliOpen is to simplify search and open up access to knowledge of every kind.",
+                aboutP2: "The goal of Bibli.on.med is to simplify search and democratize access to quality medical knowledge.",
                 aboutShieldTitle: "🛡️ Commitment to Biological (and Digital!) Security",
                 aboutShieldDesc: "All download links provided in the library are previously verified. We guarantee that hosted files are free of viruses, malicious scripts, or abusive advertisements. We focus only on clean PDFs!",
                 howItWorks: "How does the library work?",
@@ -1003,7 +980,7 @@
                 waTitle: "Join our WhatsApp Group!",
                 waDesc: "Clarify doubts, make requests directly, and share new books and summaries with medical students from all over Latin America.",
                 waBtn: "Join WhatsApp Group",
-                aboutFooterText: "BibliOpen v2.5 — Created with ❤️ to save lives.",
+                aboutFooterText: "Bibli.on.med v2.5 — Created with ❤️ to save lives.",
                 aboutFooterBtn: "Start Searching Now",
                 contribTitle: "Contribute to the Medical Collection",
                 contribSub: "Help other students by sending books or useful links quickly and safely!",
@@ -1041,7 +1018,7 @@
                 adminCsvLabel: "Add Spreadsheet URL (.csv)",
                 adminRestoreBtn: "Restore Default Official Sheet",
                 footerBrandSub: "Open Medical Library",
-                footerCopy: "© 2026 BibliOpen. Developed to facilitate access to healthcare and medical education in Latin America.",
+                footerCopy: "© 2026 Bibli.on.med. Developed to facilitate access to healthcare and medical education in Latin America.",
                 modalSafeAccent: "Secure Antivirus File",
                 modalSafeLabel: "Antivirus Scan:",
                 modalSafeVal: "Safe & Clean",
@@ -1074,14 +1051,14 @@
 
         const subtitlePhrases = {
             pt: [
-                "Literatura, história, ciência, infantil — tudo de graça, com busca ao vivo em catálogos abertos.",
+                "A maior biblioteca de medicina gratuita, revisada e livre de vírus para estudantes da América Latina.",
                 "Você sabia que você também pode contribuir com livros?",
                 "Tem alguma sugestão de livro? Entre em contato no grupo do WhatsApp.",
                 "Quando encontrar me avise 👀.",
                 "Está gostando da experiência? Espero que sim!"
             ],
             es: [
-                "Literatura, historia, ciencia, infantil — todo gratis, con búsqueda en vivo en catálogos abiertos.",
+                "La mayor biblioteca de medicina gratuita, revisada y libre de virus para estudiantes de América Latina.",
                 "¿Sabías que tú também puedes contribuir con libros?",
                 "¿Tienes alguna sugerencia de libro? Ponte en contacto en el grupo de WhatsApp.",
                 "Quando lo encuentres avísame 👀.",
@@ -1139,27 +1116,7 @@
             return lines;
         }
 
-        // O site virou BibliOpen e as chaves guardadas mudaram de nome junto.
-        // Quem já usava tinha suas planilhas salvas sob o nome antigo: sem esta
-        // migração, abriria o site novo com a lista de fontes vazia.
-        (function migrarChavesAntigas() {
-            const mapa = {
-                'biblionmed_csv_urls': 'bibliopen_csv_urls',
-                'biblionmed_books_cache': 'bibliopen_books_cache',
-                'biblionmed_local_user': 'bibliopen_local_user'
-            };
-            try {
-                for (const [antiga, nova] of Object.entries(mapa)) {
-                    const valor = localStorage.getItem(antiga);
-                    if (valor !== null && localStorage.getItem(nova) === null) {
-                        localStorage.setItem(nova, valor);
-                    }
-                    localStorage.removeItem(antiga);
-                }
-            } catch (e) { /* navegador sem localStorage — segue sem migrar */ }
-        })();
-
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'bibliopen-open-lib';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'biblionmed-open-lib';
         let db, auth;
 
         const DEFAULT_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPrKUVU7JPSCP_aDpAifIy3K-i9YiA7FW4QQZxaEHjo58op2vf7k93Pdo0jGYT8PGJCL3GqJNKZQYd/pub?gid=0&single=true&output=csv";
@@ -1220,7 +1177,7 @@
                 const userDocPath = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'data');
                 updateDoc(userDocPath, { lang: lang }).catch(err => console.error(err));
             } else {
-                localStorage.setItem('bibliopen_local_user', JSON.stringify(userProfile));
+                localStorage.setItem('biblionmed_local_user', JSON.stringify(userProfile));
             }
             applyLanguage(lang);
             showToast(lang === 'pt' ? "Idioma alterado com sucesso!" : lang === 'es' ? "¡Idioma cambiado con éxito!" : "Language updated successfully!", "success");
@@ -1384,7 +1341,7 @@
 
         async function loadSpreadsheetData() {
             let activeUrls = [];
-            const savedUrlsText = localStorage.getItem('bibliopen_csv_urls');
+            const savedUrlsText = localStorage.getItem('biblionmed_csv_urls');
             if (savedUrlsText) {
                 try {
                     activeUrls = JSON.parse(savedUrlsText);
@@ -1400,7 +1357,7 @@
             const sourceLabel = document.getElementById('data-source-label');
 
             // Cache revalidation phase (SWR)
-            const cachedData = localStorage.getItem('bibliopen_books_cache');
+            const cachedData = localStorage.getItem('biblionmed_books_cache');
             if (cachedData) {
                 try {
                     books = JSON.parse(cachedData);
@@ -1473,7 +1430,7 @@
                     }
                 });
                 books = Array.from(uniqueSet.values());
-                localStorage.setItem('bibliopen_books_cache', JSON.stringify(books));
+                localStorage.setItem('biblionmed_books_cache', JSON.stringify(books));
                 renderCategoriesAndFilters();
                 
                 if (statusBadge) {
@@ -1501,7 +1458,7 @@
             if (!listContainer) return;
 
             let activeUrls = [];
-            const savedUrlsText = localStorage.getItem('bibliopen_csv_urls');
+            const savedUrlsText = localStorage.getItem('biblionmed_csv_urls');
             if (savedUrlsText) {
                 try { activeUrls = JSON.parse(savedUrlsText); } catch(e) {}
             }
@@ -1541,7 +1498,7 @@
             }
 
             let activeUrls = [];
-            const savedUrlsText = localStorage.getItem('bibliopen_csv_urls');
+            const savedUrlsText = localStorage.getItem('biblionmed_csv_urls');
             if (savedUrlsText) {
                 try { activeUrls = JSON.parse(savedUrlsText); } catch(e) {}
             }
@@ -1555,7 +1512,7 @@
             }
 
             activeUrls.push(url);
-            localStorage.setItem('bibliopen_csv_urls', JSON.stringify(activeUrls));
+            localStorage.setItem('biblionmed_csv_urls', JSON.stringify(activeUrls));
             input.value = '';
             showToast("Nova planilha agregada com sucesso!", "success");
             loadSpreadsheetData();
@@ -1563,7 +1520,7 @@
 
         window.removeSheetUrl = function(index) {
             let activeUrls = [];
-            const savedUrlsText = localStorage.getItem('bibliopen_csv_urls');
+            const savedUrlsText = localStorage.getItem('biblionmed_csv_urls');
             if (savedUrlsText) {
                 try { activeUrls = JSON.parse(savedUrlsText); } catch(e) {}
             }
@@ -1572,22 +1529,22 @@
             }
 
             activeUrls.splice(index, 1);
-            localStorage.setItem('bibliopen_csv_urls', JSON.stringify(activeUrls));
+            localStorage.setItem('biblionmed_csv_urls', JSON.stringify(activeUrls));
             showToast("Planilha removida da integração.", "info");
             loadSpreadsheetData();
         };
 
         function initAuthListener() {
-            if (localStorage.getItem('bibliopen_admin_unlocked') === 'true') {
+            if (localStorage.getItem('biblionmed_admin_unlocked') === 'true') {
                 unlockAdminUI();
             }
             if (!auth) {
-                const localUser = localStorage.getItem('bibliopen_local_user');
+                const localUser = localStorage.getItem('biblionmed_local_user');
                 if (localUser) {
                     userProfile = JSON.parse(localUser);
                 } else {
                     userProfile = { nickname: 'Interno_' + Math.floor(Math.random() * 1000), avatar: 'BOOK', favorites: [], customAvatar: '', lang: 'pt' };
-                    localStorage.setItem('bibliopen_local_user', JSON.stringify(userProfile));
+                    localStorage.setItem('biblionmed_local_user', JSON.stringify(userProfile));
                 }
                 applyLanguage(userProfile.lang || 'pt');
                 updateUIWithProfile();
@@ -1620,221 +1577,10 @@
             });
         }
 
-        /* ═══════════════════════════════════════════════════════════════════
-           BUSCA NA WEB — o acervo deixa de ser o limite.
-
-           Tudo daqui roda no NAVEGADOR de quem está usando: o site continua
-           sendo um arquivo estático, sem servidor e sem banco de dados. Quando
-           alguém procura, a pergunta vai direto para catálogos abertos que
-           respondem com CORS liberado.
-
-           São quatro fontes, de propósito bem diferentes entre si:
-             • Project Gutenberg — domínio público, texto completo, para ler
-               na hora.
-             • Internet Archive  — acervo COMUNITÁRIO: quem envia é o público,
-               não uma editora. É onde mora o que não é oficial.
-             • Wikisource        — transcrição feita por voluntários.
-             • Open Library      — a ficha do livro, quando o resto não achar.
-
-           Cada uma falha sozinha: se o Archive cair, as outras três continuam
-           respondendo. Busca de biblioteca não pode virar tela de erro.
-           ═══════════════════════════════════════════════════════════════════ */
-
-        let webBooks = [];
-        let webFalhas = [];
-        let webBuscando = false;
-        let webTimer = null;
-        let webUltimoTermo = '';
-
-        /* Levanta erro em vez de devolver null: quem chama precisa distinguir
-           "o catálogo respondeu e não tinha nada" de "o catálogo não
-           respondeu". Engolir a falha aqui faz as duas coisas virarem a mesma
-           tela vazia — e só uma delas é problema nosso. */
-        async function pegarJSON(url, ms = 12000) {
-            const corta = new AbortController();
-            const t = setTimeout(() => corta.abort(), ms);
-            try {
-                const r = await fetch(url, { signal: corta.signal });
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                return await r.json();
-            } finally {
-                clearTimeout(t);
-            }
-        }
-
-        /* "Austen, Jane, 1775-1817" -> "Jane Austen". Catálogo guarda
-           invertido e com datas coladas; gente lê do jeito normal. */
-        function limparAutor(s) {
-            if (!s) return 'Autor desconhecido';
-            const m = /^([^,]+),\s*(.+)$/.exec(String(s).trim());
-            if (!m) return String(s).trim();
-            const resto = m[2].replace(/,?\s*\d{3,4}\??\s*-\s*\d{0,4}\??\.?$/, '').trim();
-            return resto ? `${resto} ${m[1].trim()}` : m[1].trim();
-        }
-
-        async function buscarGutenberg(termo) {
-            const j = await pegarJSON(`https://gutendex.com/books?search=${encodeURIComponent(termo)}`);
-            if (!j || !j.results) return [];
-            return j.results.slice(0, 12).map(l => ({
-                id: `web-gutenberg-${l.id}`,
-                nome: l.title || 'Sem título',
-                autor: limparAutor(l.authors && l.authors[0] && l.authors[0].name),
-                grupo: 'Domínio público',
-                subgrupo: 'Livro completo',
-                uploadDate: 'Project Gutenberg',
-                link: `https://www.gutenberg.org/ebooks/${l.id}`,
-                capa: (l.formats && l.formats['image/jpeg']) || '',
-                idioma: (l.languages && l.languages[0]) || '',
-                web: true,
-                fonteWeb: 'Project Gutenberg'
-            }));
-        }
-
-        async function buscarArchive(termo) {
-            const q = `title:(${termo}) AND mediatype:texts`;
-            const url = 'https://archive.org/advancedsearch.php'
-                + `?q=${encodeURIComponent(q)}`
-                + '&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=year&fl%5B%5D=language'
-                + '&rows=12&page=1&output=json';
-            const j = await pegarJSON(url);
-            const docs = j && j.response && j.response.docs;
-            if (!docs) return [];
-            return docs.map(d => ({
-                id: `web-archive-${d.identifier}`,
-                nome: d.title || d.identifier,
-                autor: limparAutor(Array.isArray(d.creator) ? d.creator[0] : d.creator),
-                grupo: 'Acervo comunitário',
-                subgrupo: 'Internet Archive',
-                uploadDate: d.year ? String(d.year) : 'Internet Archive',
-                link: `https://archive.org/details/${d.identifier}`,
-                capa: `https://archive.org/services/img/${d.identifier}`,
-                idioma: Array.isArray(d.language) ? d.language[0] : (d.language || ''),
-                web: true,
-                fonteWeb: 'Internet Archive'
-            }));
-        }
-
-        async function buscarWikisource(termo) {
-            const url = 'https://pt.wikisource.org/w/api.php?action=query&list=search&format=json&origin=*'
-                + `&srsearch=${encodeURIComponent(termo)}&srlimit=8`;
-            const j = await pegarJSON(url);
-            const hits = j && j.query && j.query.search;
-            if (!hits) return [];
-            return hits.map(h => ({
-                id: `web-wikisource-${h.pageid}`,
-                nome: h.title,
-                autor: 'Wikisource',
-                grupo: 'Texto livre',
-                subgrupo: 'Wikisource',
-                uploadDate: 'Voluntários',
-                link: `https://pt.wikisource.org/?curid=${h.pageid}`,
-                capa: '',
-                idioma: 'pt',
-                web: true,
-                fonteWeb: 'Wikisource'
-            }));
-        }
-
-        async function buscarOpenLibrary(termo) {
-            const campos = 'key,title,author_name,first_publish_year,cover_i,ia,public_scan_b';
-            const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(termo)}&limit=12&fields=${campos}`;
-            const j = await pegarJSON(url);
-            if (!j || !j.docs) return [];
-            return j.docs.map(d => {
-                const scan = d.public_scan_b && d.ia && d.ia[0];
-                return {
-                    id: `web-openlibrary-${String(d.key || '').replace(/\W/g, '')}`,
-                    nome: d.title || 'Sem título',
-                    autor: limparAutor(d.author_name && d.author_name[0]),
-                    grupo: scan ? 'Acervo comunitário' : 'Catálogo',
-                    subgrupo: scan ? 'Internet Archive' : 'Open Library',
-                    uploadDate: d.first_publish_year ? String(d.first_publish_year) : 'Open Library',
-                    link: scan ? `https://archive.org/details/${d.ia[0]}` : `https://openlibrary.org${d.key}`,
-                    capa: d.cover_i ? `https://covers.openlibrary.org/b/id/${d.cover_i}-M.jpg` : '',
-                    idioma: '',
-                    web: true,
-                    fonteWeb: scan ? 'Internet Archive' : 'Open Library'
-                };
-            });
-        }
-
-        async function buscarNaWeb(termo) {
-            if (!termo || termo.trim().length < 3) { webBooks = []; return; }
-            webBuscando = true;
-            webFalhas = [];
-            renderBooks();
-
-            /* Cada fonte é embrulhada para que a falha dela vire um DADO, e não
-               um silêncio: sem isto, "não achei nada" e "o catálogo está fora
-               do ar" viram a mesma tela — e só a segunda é defeito. */
-            const fontes = [
-                ['Project Gutenberg', buscarGutenberg],
-                ['Internet Archive', buscarArchive],
-                ['Wikisource', buscarWikisource],
-                ['Open Library', buscarOpenLibrary]
-            ];
-            const partes = await Promise.all(fontes.map(async ([nomeFonte, buscar]) => {
-                try {
-                    return await buscar(termo);
-                } catch (e) {
-                    webFalhas.push(nomeFonte);
-                    console.warn('[BibliOpen] ' + nomeFonte + ' não respondeu:', (e && e.message) || e);
-                    return [];
-                }
-            }));
-
-            /* O termo pode ter mudado enquanto isto voltava; resposta atrasada
-               de uma busca velha não pode sobrescrever a busca atual.
-               Desligar o "procurando" ANTES de sair é obrigatório: sem isso a
-               tela fica presa no spinner e nunca mostra resultado nenhum. */
-            if (normalizeString(termo) !== normalizeString(searchFilter)) {
-                webBuscando = false;
-                return;
-            }
-
-            const vistos = new Set(books.map(b => normalizeString(b.nome)));
-            const juntos = [];
-            partes.forEach(lista => lista.forEach(l => {
-                const k = normalizeString(l.nome);
-                if (!k || vistos.has(k)) return;
-                vistos.add(k);
-                juntos.push(l);
-            }));
-
-            webBooks = juntos;
-            webBuscando = false;
-            applyFilters();
-        }
-
-        /* Repetir a busca depois de uma falha. Precisa zerar `webUltimoTermo`,
-           senão o atalho que evita buscar duas vezes o mesmo termo faria o
-           botão não fazer nada — que é o pior tipo de botão. */
-        window.tentarDeNovo = function() {
-            webUltimoTermo = '';
-            webFalhas = [];
-            agendarBuscaWeb();
-        };
-
-        function agendarBuscaWeb() {
-            clearTimeout(webTimer);
-            const termo = searchFilter;
-            if (normalizeString(termo) === normalizeString(webUltimoTermo)) return;
-            webUltimoTermo = termo;
-            if (!termo || termo.trim().length < 3) {
-                webBooks = [];
-                webBuscando = false;
-                return;
-            }
-            /* Espera a pessoa parar de digitar: uma chamada por letra entupiria
-               os catálogos e ainda devolveria resultado de meia palavra. */
-            webTimer = setTimeout(() => buscarNaWeb(termo), 450);
-        }
-
         window.handleSearch = function() {
             searchFilter = document.getElementById('search-input').value;
             document.getElementById('clear-search-btn').classList.toggle('hidden', searchFilter === '');
-            showSuggestions();
-            agendarBuscaWeb();
+            showSuggestions(); 
             applyFilters();
         };
 
@@ -1843,11 +1589,6 @@
             searchFilter = '';
             document.getElementById('clear-search-btn').classList.add('hidden');
             document.getElementById('search-suggestions').classList.add('hidden');
-            clearTimeout(webTimer);
-            webBooks = [];
-            webFalhas = [];
-            webBuscando = false;
-            webUltimoTermo = '';
             applyFilters();
         };
 
@@ -1921,15 +1662,6 @@
                 return matchSearch && matchCategory && matchSubgroup;
             });
 
-            /* O que veio da web entra DEPOIS do acervo próprio e só quando há
-               busca por texto — navegar por categoria é passear na estante da
-               casa, e misturar catálogo de fora ali só faria barulho.
-               Os filtros de categoria/subgrupo também não se aplicam: eles
-               falam da classificação daqui, que a web não usa. */
-            const webVisiveis = (searchTerms.length > 0 && categoryFilter === 'all' && selectedSubgroups.length === 0)
-                ? webBooks
-                : [];
-
             // APPLY ADVANCED SORTING (A-Z, Z-A, Newest)
             if (sortBy === 'az') {
                 filteredBooks.sort((a, b) => a.nome.localeCompare(b.nome));
@@ -1942,11 +1674,6 @@
                     return dateB.localeCompare(dateA);
                 });
             }
-
-            /* A ordenação vale para o acervo da casa; os resultados da web
-               mantêm a ordem em que os catálogos devolveram, que é a ordem de
-               relevância deles. */
-            filteredBooks = filteredBooks.concat(webVisiveis);
 
             renderBooks();
         }
@@ -1973,54 +1700,21 @@
             grid.innerHTML = '';
             
             const currentLang = userProfile.lang || 'pt';
-            const daWeb = filteredBooks.filter(b => b.web).length;
-            const daCasa = filteredBooks.length - daWeb;
             let labelText = '';
             if (currentLang === 'en') {
-                labelText = `Showing ${daCasa} of ${books.length} items`;
-                if (daWeb) labelText += ` + ${daWeb} from open catalogs`;
-                if (webBuscando) labelText += ' • searching the web…';
+                labelText = `Showing ${filteredBooks.length} of ${books.length} items`;
             } else if (currentLang === 'es') {
-                labelText = `Mostrando ${daCasa} de ${books.length} ítems`;
-                if (daWeb) labelText += ` + ${daWeb} de catálogos abiertos`;
-                if (webBuscando) labelText += ' • buscando en la web…';
+                labelText = `Mostrando ${filteredBooks.length} de ${books.length} ítems`;
             } else {
-                labelText = `Mostrando ${daCasa} de ${books.length} livros`;
-                if (daWeb) labelText += ` + ${daWeb} de catálogos abertos`;
-                if (webBuscando) labelText += ' • procurando na web…';
-            }
-            // Falha parcial precisa aparecer: com um catálogo fora do ar a
-            // lista fica menor sem motivo visível, e isso parece acervo pobre.
-            if (!webBuscando && webFalhas.length && webFalhas.length < 4) {
-                labelText += ` • sem resposta de ${webFalhas.join(', ')}`;
+                labelText = `Mostrando ${filteredBooks.length} de ${books.length} livros`;
             }
             if (countLabel) {
                 countLabel.textContent = labelText;
             }
 
-            /* Enquanto a web não respondeu, "nada encontrado" seria mentira: a
-               busca ainda está acontecendo. */
             if (filteredBooks.length === 0) {
-                // Se TODOS os catálogos falharam, o problema não é a palavra que
-                // a pessoa digitou — é a conexão. Dizer "nada encontrado" aqui
-                // manda ela procurar defeito no lugar errado.
-                const mostrarErro = normalizeString(searchFilter).length > 0 && !webBuscando && webFalhas.length === 4;
-
-                if (emptyState) emptyState.classList.toggle('hidden', webBuscando || mostrarErro);
-                grid.classList.toggle('hidden', !(webBuscando || mostrarErro));
-
-                if (webBuscando) {
-                    grid.innerHTML = '<div class="col-span-full text-center py-10 text-slate-400 text-xs">'
-                        + '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Procurando em catálogos abertos…</div>';
-                } else if (mostrarErro) {
-                    grid.innerHTML = '<div class="col-span-full text-center py-10 px-4">'
-                        + '<i class="fa-solid fa-plug-circle-xmark text-3xl text-slate-300 mb-3"></i>'
-                        + '<p class="text-sm font-bold text-navy-900">Não consegui falar com os catálogos</p>'
-                        + '<p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">Nenhuma das quatro fontes respondeu. '
-                        + 'Costuma ser conexão ou bloqueio de rede. O detalhe do erro fica no console do navegador.</p>'
-                        + '<button onclick="window.tentarDeNovo()" class="mt-4 bg-navy-900 hover:bg-moss-600 text-white text-xs font-bold px-4 py-2 rounded-lg">'
-                        + '<i class="fa-solid fa-rotate-right mr-1.5"></i>Tentar de novo</button></div>';
-                }
+                if (emptyState) emptyState.classList.remove('hidden');
+                grid.classList.add('hidden');
                 return;
             }
 
@@ -2030,7 +1724,7 @@
             filteredBooks.forEach(book => {
                 const isFav = userProfile.favorites && userProfile.favorites.includes(book.id);
                 const card = document.createElement('div');
-                card.className = "bg-white rounded-2xl p-4 shadow-sm shadow-slate-200/60 border border-slate-200/70 hover:shadow-lg hover:-translate-y-0.5 hover:border-moss-100 transition-all duration-200 flex gap-3.5 group min-h-[136px] min-w-0 relative overflow-hidden";
+                card.className = "bg-white rounded-2xl p-4 shadow-lg shadow-slate-100 border border-slate-100/60 hover:shadow-xl hover:border-moss-100 transition-all flex gap-3 group min-h-[136px] min-w-0 relative overflow-hidden";
                 
                 const cbCapa = book.capa ? book.capa.trim() : '';
                 const escapedNome = book.nome.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -2047,25 +1741,18 @@
                     <div class="flex-grow flex flex-col justify-between min-w-0">
                         <div class="min-w-0">
                             <div class="flex items-center justify-between gap-1 mb-1">
-                                <span class="${book.web ? 'bg-sky-50 text-sky-700' : 'bg-moss-50 text-moss-700'} text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider truncate max-w-[75%]">${book.grupo} • ${book.subgrupo}</span>
-                                ${book.web
-                                    /* Favoritar guarda só o id e resolve no acervo da casa; um
-                                       favorito da web sumiria no próximo carregamento. Melhor
-                                       não oferecer do que oferecer quebrado. */
-                                    ? `<span class="text-sky-400 p-1 -mr-1" title="Veio de ${book.fonteWeb}"><i class="fa-solid fa-globe text-xs"></i></span>`
-                                    : `<button onclick="event.stopPropagation(); window.toggleFavorite('${book.id}')" class="text-slate-300 hover:text-amber-500 transition-all p-1 -mr-1" title="Favoritar">
+                                <span class="bg-moss-50 text-moss-700 text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider truncate max-w-[75%]">${book.grupo} • ${book.subgrupo}</span>
+                                <button onclick="event.stopPropagation(); window.toggleFavorite('${book.id}')" class="text-slate-300 hover:text-amber-500 transition-all p-1 -mr-1" title="Favoritar">
                                     <i class="${isFav ? 'fa-solid text-amber-500' : 'fa-regular'} fa-star text-xs"></i>
-                                </button>`}
+                                </button>
                             </div>
-                            <h4 onclick="window.openBookModal('${book.id}')" class="titulo-obra cursor-pointer font-bold text-navy-900 group-hover:text-moss-600 transition-all text-sm sm:text-[15px] line-clamp-2 leading-snug mb-1" title="${book.nome}">${book.nome}</h4>
+                            <h4 onclick="window.openBookModal('${book.id}')" class="font-bold text-navy-900 group-hover:text-moss-600 transition-all text-xs sm:text-sm line-clamp-2 leading-snug mb-0.5" title="${book.nome}">${book.nome}</h4>
                             <p class="text-[10px] text-slate-400 font-medium truncate">Por ${book.autor}</p>
                         </div>
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-100 gap-2 shrink-0">
-                            <span class="text-[9px] text-slate-400 font-medium truncate">
-                                <i class="fa-solid ${book.web ? 'fa-globe' : 'fa-clock-rotate-left'}"></i> ${book.uploadDate}
-                            </span>
-                            <button onclick="window.openBookModal('${book.id}')" class="bg-navy-900 hover:bg-moss-600 text-white font-bold text-[10px] px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 shrink-0">
-                                <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i> ${accessText}
+                        <div class="flex items-center justify-between pt-1.5 border-t border-slate-50 gap-2 shrink-0">
+                            <span class="text-[9px] text-slate-300 font-medium truncate"><i class="fa-solid fa-clock-rotate-left"></i> ${book.uploadDate}</span>
+                            <button onclick="window.openBookModal('${book.id}')" class="bg-navy-50 hover:bg-moss-600 hover:text-white text-navy-900 font-bold text-[10px] px-2.5 py-1.5 rounded-lg transition-all flex items-center gap-1 shrink-0">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> ${accessText}
                             </button>
                         </div>
                     </div>
@@ -2297,7 +1984,7 @@
             
             if (key === '1qaz2wsx@') { 
                 isAdminUnlocked = true;
-                localStorage.setItem('bibliopen_admin_unlocked', 'true');
+                localStorage.setItem('biblionmed_admin_unlocked', 'true');
                 unlockAdminUI();
                 showToast(currentLang === 'en' ? "Admin Access Granted!" : "Acesso ao Painel Admin Liberado!", "success");
             } else {
@@ -2313,7 +2000,7 @@
 
         window.lockAdmin = function() {
             isAdminUnlocked = false;
-            localStorage.removeItem('bibliopen_admin_unlocked');
+            localStorage.removeItem('biblionmed_admin_unlocked');
             document.getElementById('admin-dashboard-section').classList.add('hidden');
             document.getElementById('admin-gate-section').classList.remove('hidden');
             document.getElementById('admin-passkey').value = '';
@@ -2321,7 +2008,7 @@
         };
 
         window.resetToDemo = function() {
-            localStorage.removeItem('bibliopen_csv_urls');
+            localStorage.removeItem('biblionmed_csv_urls');
             document.getElementById('sheet-csv-url').value = '';
             loadSpreadsheetData();
             showToast("Restaurado para as fontes oficiais originais!", "success");
@@ -2387,11 +2074,7 @@
         };
 
         window.openBookModal = function(id) {
-            /* Procura nos dois lugares: o acervo da casa e o que a busca
-               trouxe da web. Sem isto, clicar num resultado da web não abriria
-               nada — e é justamente o resultado que a pessoa foi procurar. */
-            const book = books.find(b => b.id.toString() === id.toString())
-                || webBooks.find(b => b.id.toString() === id.toString());
+            const book = books.find(b => b.id.toString() === id.toString());
             if (!book) return;
 
             currentSelectedBook = book;
@@ -2473,7 +2156,7 @@
                     console.error("Firestore update profile error: ", err);
                 }
             } else {
-                localStorage.setItem('bibliopen_local_user', JSON.stringify(userProfile));
+                localStorage.setItem('biblionmed_local_user', JSON.stringify(userProfile));
             }
             updateUIWithProfile();
             showToast("Perfil updated!", "success");
@@ -2498,7 +2181,7 @@
                     console.error("Error syncing favorites: ", err);
                 }
             } else {
-                localStorage.setItem('bibliopen_local_user', JSON.stringify(userProfile));
+                localStorage.setItem('biblionmed_local_user', JSON.stringify(userProfile));
             }
             renderBooks();
             renderProfileFavorites();
@@ -2579,25 +2262,8 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => {
-                        console.log('BibliOpen pronto para instalação offline!', reg);
-                        // Procura versão nova na hora. Sem isto, quem já usou o
-                        // site pode ficar semanas com um service worker velho —
-                        // e o antigo interceptava TODAS as requisições, inclusive
-                        // as dos catálogos, o que quebra a busca de um jeito que
-                        // não aparece em lugar nenhum.
-                        reg.update().catch(() => {});
-                    })
+                    .then(reg => console.log('Bibli.on.med pronto para instalação offline!', reg))
                     .catch(err => console.error('Falha ao registrar instalador do PWA:', err));
-
-                // Quando um service worker novo assume, a página em tela ainda é
-                // a que o antigo serviu. Recarregar UMA vez põe as duas em dia.
-                let jaRecarregou = false;
-                navigator.serviceWorker.addEventListener('controllerchange', () => {
-                    if (jaRecarregou) return;
-                    jaRecarregou = true;
-                    window.location.reload();
-                });
             });
         }
     </script>
